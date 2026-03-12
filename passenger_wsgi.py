@@ -3,4 +3,4 @@ import sys
 
 
 
-from api.wsgi import application
+from bns.wsgi import application
