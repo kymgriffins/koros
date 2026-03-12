@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Ndio Story - Follow the Budget. Find the Story.</title>
+    <meta name="description" content="Kenyan budget transparency platform for young citizens. We turn national and county budgets into clear insights, practical analysis, and trackable evidence.">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            green: '#22c55e',
+                            greenDark: '#16a34a',
+                            blue: '#0066ff',
+                            blueDark: '#0052cc',
+                            red: '#ff4d4d',
+                            dark: '#0a0a0a',
+                            darker: '#050505',
+                            surface: '#141414',
+                            surfaceLight: '#1f1f1f',
+                            gray: '#888888',
+                            grayLight: '#a3a3a3',
+                        }
+                    },
+                    animation: {
+                        'marquee': 'marquee 25s linear infinite',
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        .text-balance {
+            text-wrap: balance;
+        }
+
+        .glass {
+            background: rgba(20, 20, 20, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #444;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2 group">
+                    <div class="w-10 h-10 bg-brand-green rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i data-lucide="landmark" class="w-6 h-6 text-black"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xl font-bold tracking-tight">Budget<span class="text-brand-green">Ndio</span>Story</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#reports" class="text-sm font-medium text-brand-grayLight hover:text-white transition-colors">Reports</a>
+                    <a href="#learn" class="text-sm font-medium text-brand-grayLight hover:text-white transition-colors">Learn</a>
+                    <a href="#impact" class="text-sm font-medium text-brand-grayLight hover:text-white transition-colors">Impact</a>
+                    <a href="#partners" class="text-sm font-medium text-brand-grayLight hover:text-white transition-colors">Partners</a>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <a href="#contact" class="text-sm font-medium text-brand-grayLight hover:text-white transition-colors">Contact</a>
+                    <a href="#donate" class="bg-brand-green hover:bg-brand-greenDark text-black font-semibold px-5 py-2.5 rounded-full transition-all hover:scale-105 flex items-center gap-2">
+                        <i data-lucide="heart" class="w-4 h-4"></i>
+                        Donate
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 text-white">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass border-t border-white/10">
+            <div class="px-4 py-6 space-y-4">
+                <a href="#reports" class="block text-lg font-medium text-white">Reports</a>
+                <a href="#learn" class="block text-lg font-medium text-white">Learn</a>
+                <a href="#impact" class="block text-lg font-medium text-white">Impact</a>
+                <a href="#partners" class="block text-lg font-medium text-white">Partners</a>
+                <a href="#donate" class="block bg-brand-green text-black font-semibold px-5 py-3 rounded-full text-center mt-4">
+                    Donate Now
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-20">
+            <div class="absolute inset-0" style="background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0); background-size: 40px 40px;"></div>
+        </div>
+
+        <!-- Decorative Elements -->
+        <div class="absolute top-1/4 left-10 w-64 h-64 bg-brand-green/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/4 right-10 w-96 h-96 bg-brand-blue/10 rounded-full blur-3xl"></div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+            <!-- Status Badge (for 503 mode) -->
+            <div id="status-badge" class="hidden inline-flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-full px-4 py-2 mb-8 animate-fade-in">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                </span>
+                <span class="text-red-400 text-sm font-semibold uppercase tracking-wider">Service Temporarily Unavailable</span>
+            </div>
+
+            <!-- Main Badge -->
+            <div class="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2 mb-8 reveal">
+                <i data-lucide="shield-check" class="w-4 h-4 text-brand-green"></i>
+                <span class="text-sm font-medium text-brand-grayLight">Kenya Budget Transparency Platform</span>
+            </div>
+
+            <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6 reveal" style="transition-delay: 100ms;">
+                Follow the Budget.<br>
+                <span class="text-brand-green">Find the Story.</span>
+            </h1>
+
+            <p class="text-xl text-brand-grayLight max-w-2xl mx-auto mb-10 text-balance reveal" style="transition-delay: 200ms;">
+                We turn Kenya's national and county budgets into clear insights, practical analysis, and trackable evidence to enhance youth participation and accountability.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 reveal" style="transition-delay: 300ms;">
+                <a href="#reports" class="w-full sm:w-auto bg-brand-green hover:bg-brand-greenDark text-black font-bold px-8 py-4 rounded-full transition-all hover:scale-105 flex items-center justify-center gap-2">
+                    <i data-lucide="search" class="w-5 h-5"></i>
+                    Explore Reports
+                </a>
+                <a href="#learn" class="w-full sm:w-auto bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold px-8 py-4 rounded-full transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                    Start Learning
+                </a>
+            </div>
+
+            <!-- Social Proof -->
+            <div class="mt-16 flex items-center justify-center gap-4 reveal" style="transition-delay: 400ms;">
+                <div class="flex -space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-brand-blue/30 border-2 border-brand-dark flex items-center justify-center">
+                        <i data-lucide="user" class="w-5 h-5 text-brand-blue"></i>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-brand-green/30 border-2 border-brand-dark flex items-center justify-center">
+                        <i data-lucide="user" class="w-5 h-5 text-brand-green"></i>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-purple-500/30 border-2 border-brand-dark flex items-center justify-center">
+                        <i data-lucide="user" class="w-5 h-5 text-purple-400"></i>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-orange-500/30 border-2 border-brand-dark flex items-center justify-center">
+                        <i data-lucide="user" class="w-5 h-5 text-orange-400"></i>
+                    </div>
+                </div>
+                <div class="text-left">
+                    <div class="flex items-center gap-1 text-yellow-500">
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <p class="text-sm text-brand-grayLight">Trusted by <span class="text-white font-semibold">15,000+</span> Kenyans</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+            <i data-lucide="chevron-down" class="w-6 h-6 text-brand-gray"></i>
+        </div>
+    </section>
+
+    <!-- Marquee Section -->
+    <div class="border-y border-white/10 bg-brand-surface overflow-hidden py-4">
+        <div class="flex animate-marquee whitespace-nowrap">
+            <div class="flex items-center gap-8 mx-4">
+                <span class="flex items-center gap-2 text-brand-grayLight">
+                    <span class="bg-brand-green text-black text-xs font-bold px-2 py-1 rounded">NEW</span>
+                    Budget 101 Learn Hub is Live
+                </span>
+                <span class="text-brand-gray">•</span>
+                <span class="flex items-center gap-2 text-brand-grayLight">
+                    <span class="bg-brand-blue text-white text-xs font-bold px-2 py-1 rounded">CREATORS</span>
+                    Visual Stories for TikTok, IG & YouTube
+                </span>
+                <span class="text-brand-gray">•</span>
+                <span class="flex items-center gap-2 text-brand-grayLight">
+                    <span class="bg-brand-red text-white text-xs font-bold px-2 py-1 rounded">CIVIC</span>
+                    Track Kenya's Budget Calendar
+                </span>
+                <span class="text-brand-gray">•</span>
+            </div>
+            <div class="flex items-center gap-8 mx-4">
+                <span class="flex items-center gap-2 text-brand-grayLight">
+                    <span class="bg-brand-green text-black text-xs font-bold px-2 py-1 rounded">NEW</span>
+                    Budget 101 Learn Hub is Live
+                </span>
+                <span class="text-brand-gray">•</span>
+                <span class="flex items-center gap-2 text-brand-grayLight">
+                    <span class="bg-brand-blue text-white text-xs font-bold px-2 py-1 rounded">CREATORS</span>
+                    Visual Stories for TikTok, IG & YouTube
+                </span>
+                <span class="text-brand-gray">•</span>
+                <span class="flex items-center gap-2 text-brand-grayLight">
+                    <span class="bg-brand-red text-white text-xs font-bold px-2 py-1 rounded">CIVIC</span>
+                    Track Kenya's Budget Calendar
+                </span>
+                <span class="text-brand-gray">•</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <section id="learn" class="py-24 bg-brand-surface">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <p class="text-brand-green font-semibold tracking-wider uppercase text-sm mb-4">Youth-First Public Finance</p>
+                    <h2 class="text-4xl sm:text-5xl font-bold mb-6">A premium home for Kenya's budget story.</h2>
+                    <p class="text-brand-grayLight text-lg mb-8 leading-relaxed">
+                        We pair serious fiscal analysis with cinematic storytelling so young Kenyans can see where money starts, where it moves, and what actually lands on the ground.
+                    </p>
+
+                    <div class="flex flex-wrap gap-4 mb-8">
+                        <a href="#reports" class="bg-brand-green hover:bg-brand-greenDark text-black font-semibold px-6 py-3 rounded-full transition-all hover:scale-105 flex items-center gap-2">
+                            Browse Reports
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                        <a href="#" class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium px-6 py-3 rounded-full transition-all flex items-center gap-2">
+                            Join as Storyteller
+                        </a>
+                    </div>
+
+                    <p class="text-sm text-brand-gray">
+                        Co-created with creators, universities & civic groups. <span class="text-brand-green">Always free to access.</span>
+                    </p>
+                </div>
+
+                <div class="reveal">
+                    <div class="bg-brand-surfaceLight border border-white/10 rounded-3xl p-8 hover-lift">
+                        <div class="flex items-start justify-between mb-6">
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">Next Civic Windows</h3>
+                                <p class="text-brand-grayLight text-sm">Key moments in Kenya's budget calendar that need your voice.</p>
+                            </div>
+                            <span class="flex items-center gap-1.5 bg-red-500/10 text-red-400 text-xs font-bold px-3 py-1.5 rounded-full">
+                                <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span>
+                                LIVE
+                            </span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <a href="#" class="block bg-brand-dark hover:bg-white/5 border border-white/5 rounded-2xl p-5 transition-all group">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-semibold mb-1 group-hover:text-brand-green transition-colors">Budget Reading & Debate</h4>
+                                        <p class="text-sm text-brand-grayLight">Follow allocations as they're tabled and amended</p>
+                                    </div>
+                                    <i data-lucide="arrow-right" class="w-5 h-5 text-brand-gray group-hover:text-brand-green group-hover:translate-x-1 transition-all"></i>
+                                </div>
+                            </a>
+
+                            <a href="#" class="block bg-brand-dark hover:bg-white/5 border border-white/5 rounded-2xl p-5 transition-all group">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-semibold mb-1 group-hover:text-brand-green transition-colors">County Public Participation</h4>
+                                        <p class="text-sm text-brand-grayLight">Templates and briefs for effective baraza participation</p>
+                                    </div>
+                                    <i data-lucide="arrow-right" class="w-5 h-5 text-brand-gray group-hover:text-brand-green group-hover:translate-x-1 transition-all"></i>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section id="impact" class="py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                <p class="text-brand-green font-semibold tracking-wider uppercase text-sm mb-4">Impact in Numbers</p>
+                <h2 class="text-4xl sm:text-5xl font-bold mb-6">A budget platform that starts with people, not PDFs.</h2>
+                <p class="text-brand-grayLight text-lg">
+                    We work with analysts, creators and organizers to keep Kenya's budget story measurable, searchable and shareable.
+                </p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-brand-surface border border-white/10 rounded-3xl p-8 hover-lift reveal">
+                    <div class="w-14 h-14 bg-brand-blue/10 rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="file-text" class="w-7 h-7 text-brand-blue"></i>
+                    </div>
+                    <div class="text-4xl font-black text-white mb-2">10+</div>
+                    <p class="text-brand-grayLight text-sm uppercase tracking-wider">Years of Reports Analyzed</p>
+                </div>
+
+                <div class="bg-brand-surface border border-white/10 rounded-3xl p-8 hover-lift reveal" style="transition-delay: 100ms;">
+                    <div class="w-14 h-14 bg-brand-green/10 rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="users" class="w-7 h-7 text-brand-green"></i>
+                    </div>
+                    <div class="text-4xl font-black text-white mb-2">15K+</div>
+                    <p class="text-brand-grayLight text-sm uppercase tracking-wider">Kenyans Reached</p>
+                </div>
+
+                <div class="bg-brand-surface border border-white/10 rounded-3xl p-8 hover-lift reveal" style="transition-delay: 200ms;">
+                    <div class="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="map-pin" class="w-7 h-7 text-purple-400"></i>
+                    </div>
+                    <div class="text-4xl font-black text-white mb-2">47</div>
+                    <p class="text-brand-grayLight text-sm uppercase tracking-wider">Counties Covered</p>
+                </div>
+
+                <div class="bg-brand-surface border border-white/10 rounded-3xl p-8 hover-lift reveal" style="transition-delay: 300ms;">
+                    <div class="w-14 h-14 bg-orange-500/10 rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="handshake" class="w-7 h-7 text-orange-400"></i>
+                    </div>
+                    <div class="text-4xl font-black text-white mb-2">20+</div>
+                    <p class="text-brand-grayLight text-sm uppercase tracking-wider">Partner Organizations</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-24 bg-brand-surface">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                <p class="text-brand-green font-semibold tracking-wider uppercase text-sm mb-4">How It Works</p>
+                <h2 class="text-4xl sm:text-5xl font-bold mb-6">Three simple moves from document to story to pressure.</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="relative reveal">
+                    <div class="absolute -top-4 -left-4 text-8xl font-black text-white/5 select-none">01</div>
+                    <div class="relative bg-brand-surfaceLight border border-white/10 rounded-3xl p-8 hover-lift h-full">
+                        <div class="w-16 h-16 bg-brand-blue/10 rounded-2xl flex items-center justify-center mb-6">
+                            <i data-lucide="book-open" class="w-8 h-8 text-brand-blue"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Browse Reports</h3>
+                        <p class="text-brand-grayLight leading-relaxed">
+                            Explore simplified budget documents from national and county levels in plain language that makes sense.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="relative reveal" style="transition-delay: 100ms;">
+                    <div class="absolute -top-4 -left-4 text-8xl font-black text-white/5 select-none">02</div>
+                    <div class="relative bg-brand-surfaceLight border border-white/10 rounded-3xl p-8 hover-lift h-full">
+                        <div class="w-16 h-16 bg-brand-green/10 rounded-2xl flex items-center justify-center mb-6">
+                            <i data-lucide="bar-chart-3" class="w-8 h-8 text-brand-green"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Analyze Insights</h3>
+                        <p class="text-brand-grayLight leading-relaxed">
+                            Dive deep into sector analysis, track changes over time, and understand what budget decisions mean for you.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="relative reveal" style="transition-delay: 200ms;">
+                    <div class="absolute -top-4 -left-4 text-8xl font-black text-white/5 select-none">03</div>
+                    <div class="relative bg-brand-surfaceLight border border-white/10 rounded-3xl p-8 hover-lift h-full">
+                        <div class="w-16 h-16 bg-brand-red/10 rounded-2xl flex items-center justify-center mb-6">
+                            <i data-lucide="megaphone" class="w-8 h-8 text-brand-red"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Take Action</h3>
+                        <p class="text-brand-grayLight leading-relaxed">
+                            Use templates, join trainings, and participate in budget processes to make your voice heard by leaders.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Reports -->
+    <section id="reports" class="py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-12 reveal">
+                <div>
+                    <p class="text-brand-green font-semibold tracking-wider uppercase text-sm mb-4">Fresh from the Budget</p>
+                    <h2 class="text-4xl sm:text-5xl font-bold">Latest reports and visual explainers.</h2>
+                </div>
+                <a href="#" class="text-brand-grayLight hover:text-white font-medium flex items-center gap-2 transition-colors">
+                    View all reports
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <article class="bg-brand-surface border border-white/10 rounded-2xl p-6 hover-lift group reveal">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-brand-blue/10 text-brand-blue text-xs font-bold px-3 py-1 rounded-full">NATIONAL</span>
+                        <span class="text-brand-gray text-sm">Feb 2025</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 group-hover:text-brand-green transition-colors line-clamp-2">FY 2025/26 Budget at a Glance</h3>
+                    <p class="text-brand-grayLight text-sm mb-6">Key highlights from the national budget reading and what it means for sectors.</p>
+                    <a href="#" class="inline-flex items-center gap-2 text-brand-green font-semibold text-sm group-hover:gap-3 transition-all">
+                        Read brief
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </article>
+
+                <article class="bg-brand-surface border border-white/10 rounded-2xl p-6 hover-lift group reveal" style="transition-delay: 100ms;">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-purple-500/10 text-purple-400 text-xs font-bold px-3 py-1 rounded-full">SECTOR</span>
+                        <span class="text-brand-gray text-sm">Jan 2025</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 group-hover:text-brand-green transition-colors line-clamp-2">Health Sector Budget Analysis</h3>
+                    <p class="text-brand-grayLight text-sm mb-6">Where healthcare funding is going and what it means for universal health coverage.</p>
+                    <a href="#" class="inline-flex items-center gap-2 text-brand-green font-semibold text-sm group-hover:gap-3 transition-all">
+                        Read brief
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </article>
+
+                <article class="bg-brand-surface border border-white/10 rounded-2xl p-6 hover-lift group reveal" style="transition-delay: 200ms;">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-orange-500/10 text-orange-400 text-xs font-bold px-3 py-1 rounded-full">COUNTY</span>
+                        <span class="text-brand-gray text-sm">Dec 2024</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 group-hover:text-brand-green transition-colors line-clamp-2">Nairobi County Budget Brief</h3>
+                    <p class="text-brand-grayLight text-sm mb-6">Understanding the city budget for residents and where your taxes go.</p>
+                    <a href="#" class="inline-flex items-center gap-2 text-brand-green font-semibold text-sm group-hover:gap-3 transition-all">
+                        Read brief
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners Section -->
+    <section id="partners" class="py-24 bg-brand-surface">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                <p class="text-brand-green font-semibold tracking-wider uppercase text-sm mb-4">Led by Storytellers</p>
+                <h2 class="text-4xl sm:text-5xl font-bold mb-6">A Kenya-wide consortium at the intersection of media, data and organizing.</h2>
+                <p class="text-brand-grayLight text-lg">
+                    Budget Ndio Story is led by <strong class="text-white">The Continental Pot, Colour Twist Media,</strong> and <strong class="text-white">Sen Media & Events</strong>.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <a href="#" class="bg-brand-surfaceLight border border-white/10 rounded-3xl p-8 text-center hover-lift group reveal">
+                    <div class="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-white/10 transition-colors">
+                        <i data-lucide="globe" class="w-10 h-10 text-brand-gray group-hover:text-brand-green transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">The Continental Pot</h3>
+                    <p class="text-brand-grayLight text-sm">Media & Storytelling</p>
+                </a>
+
+                <a href="#" class="bg-brand-surfaceLight border border-white/10 rounded-3xl p-8 text-center hover-lift group reveal" style="transition-delay: 100ms;">
+                    <div class="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-white/10 transition-colors">
+                        <i data-lucide="palette" class="w-10 h-10 text-brand-gray group-hover:text-brand-blue transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Colour Twist Media</h3>
+                    <p class="text-brand-grayLight text-sm">Creative Production</p>
+                </a>
+
+                <a href="#" class="bg-brand-surfaceLight border border-white/10 rounded-3xl p-8 text-center hover-lift group reveal" style="transition-delay: 200ms;">
+                    <div class="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-white/10 transition-colors">
+                        <i data-lucide="video" class="w-10 h-10 text-brand-gray group-hover:text-brand-red transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Sen Media & Events</h3>
+                    <p class="text-brand-grayLight text-sm">Events & Production</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA / Donate Section -->
+    <section id="donate" class="py-24 relative overflow-hidden">
+        <div class="absolute inset-0 bg-brand-green/5"></div>
+        <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-green/20 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-green/20 to-transparent"></div>
+
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+            <div class="inline-flex items-center gap-2 bg-brand-green/10 border border-brand-green/20 rounded-full px-4 py-2 mb-8">
+                <i data-lucide="heart" class="w-4 h-4 text-brand-green"></i>
+                <span class="text-brand-green text-sm font-semibold">Support Our Work</span>
+            </div>
+
+            <h2 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">Help Us Keep Kenya's Budget Transparent</h2>
+
+            <p class="text-xl text-brand-grayLight mb-10 max-w-2xl mx-auto">
+                Budget Ndio Story is a youth-led initiative making budget information accessible to all Kenyans. Your support helps us continue this work.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#" class="w-full sm:w-auto bg-brand-green hover:bg-brand-greenDark text-black font-bold px-8 py-4 rounded-full transition-all hover:scale-105 flex items-center justify-center gap-2">
+                    <i data-lucide="heart" class="w-5 h-5"></i>
+                    Donate Now
+                </a>
+                <a href="#" class="w-full sm:w-auto bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold px-8 py-4 rounded-full transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="mail" class="w-5 h-5"></i>
+                    Partner With Us
+                </a>
+            </div>
+
+            <div class="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-brand-gray">
+                <span class="flex items-center gap-2">
+                    <i data-lucide="globe" class="w-4 h-4"></i>
+                    International donations accepted
+                </span>
+                <span class="flex items-center gap-2">
+                    <i data-lucide="mail" class="w-4 h-4"></i>
+                    info@budgetndiostory.org
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 bg-brand-darker pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <div class="md:col-span-1">
+                    <a href="#" class="flex items-center gap-2 mb-6">
+                        <div class="w-10 h-10 bg-brand-green rounded-xl flex items-center justify-center">
+                            <i data-lucide="landmark" class="w-6 h-6 text-black"></i>
+                        </div>
+                        <span class="text-xl font-bold">Budget<span class="text-brand-green">Ndio</span>Story</span>
+                    </a>
+                    <p class="text-brand-grayLight text-sm mb-6">
+                        We turn national and county budgets into clear insights, practical analysis, and trackable evidence.
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <a href="https://x.com/BudgetNdioStory" target="_blank" class="w-10 h-10 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center text-brand-gray hover:text-white transition-all">
+                            <i data-lucide="twitter" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://www.instagram.com/budgetndiostory" target="_blank" class="w-10 h-10 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center text-brand-gray hover:text-white transition-all">
+                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://www.youtube.com/@BudgetNdioStory" target="_blank" class="w-10 h-10 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center text-brand-gray hover:text-white transition-all">
+                            <i data-lucide="youtube" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=61586898487932" target="_blank" class="w-10 h-10 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center text-brand-gray hover:text-white transition-all">
+                            <i data-lucide="facebook" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Explore</h4>
+                    <ul class="space-y-3 text-sm text-brand-grayLight">
+                        <li><a href="#reports" class="hover:text-brand-green transition-colors">Reports</a></li>
+                        <li><a href="#" class="hover:text-brand-green transition-colors">Analysis</a></li>
+                        <li><a href="#" class="hover:text-brand-green transition-colors">Tracker</a></li>
+                        <li><a href="#" class="hover:text-brand-green transition-colors">Take Action</a></li>
+                        <li><a href="#learn" class="hover:text-brand-green transition-colors">Learn</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Company</h4>
+                    <ul class="space-y-3 text-sm text-brand-grayLight">
+                        <li><a href="#" class="hover:text-brand-green transition-colors">About Us</a></li>
+                        <li><a href="#partners" class="hover:text-brand-green transition-colors">Partners</a></li>
+                        <li><a href="#contact" class="hover:text-brand-green transition-colors">Contact</a></li>
+                        <li><a href="#" class="hover:text-brand-green transition-colors">Careers</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Transparency</h4>
+                    <ul class="space-y-3 text-sm text-brand-grayLight">
+                        <li><a href="#" class="hover:text-brand-green transition-colors">Accuracy Commitment</a></li>
+                        <li><a href="#" class="hover:text-brand-green transition-colors">Corrections</a></li>
+                        <li><a href="#" class="hover:text-brand-green transition-colors">Sources</a></li>
+                        <li><a href="#" class="hover:text-brand-green transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-brand-gray text-sm">© 2026 BudgetNdioStory. All Rights Reserved.</p>
+                <p class="text-brand-green font-semibold text-sm">Follow the Budget. Find the Story.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auto-retry Script (for 503 mode) -->
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Check if this is a 503 error page by URL parameter or hash
+        const isErrorMode = window.location.hash === '#503' || window.location.search.includes('error=503');
+
+        if (isErrorMode) {
+            document.getElementById('status-badge').classList.remove('hidden');
+
+            // Auto-retry countdown
+            let timeLeft = 30;
+            const countdownEl = document.getElementById('countdown');
+
+            if (countdownEl) {
+                const timer = setInterval(() => {
+                    timeLeft--;
+                    countdownEl.textContent = timeLeft;
+
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        window.location.reload();
+                    }
+                }, 1000);
+            }
+        }
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        let lastScroll = 0;
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+
+            if (currentScroll > 50) {
+                navbar.classList.add('glass');
+            } else {
+                navbar.classList.remove('glass');
+            }
+
+            lastScroll = currentScroll;
+        });
+
+        // Scroll reveal animation
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+    </script>
+
+</body>
+</html>

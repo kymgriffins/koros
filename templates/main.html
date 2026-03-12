@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Ndio Story — Kenya's Budget Decoded for the Next Generation</title>
+  <meta name="description" content="Budget Ndio Story translates Kenya's national and county government budgets into clear, accessible insights for young Kenyans. Follow the money. Find the story. Hold power accountable.">
+  <meta name="keywords" content="Kenya budget, budget transparency, Kenya public finance, county budgets, budget accountability, Kenya spending, BNS">
+  <meta property="og:title" content="Budget Ndio Story — Kenya's Budget Decoded">
+  <meta property="og:description" content="We translate Kenya's KSh 4 trillion national budget and 47 county budgets into clarity. Free. Always.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Neue Montreal Font */
+    @font-face {
+      font-family: 'Neue Montreal';
+      src: url('/static/NeueMontreal.woff') format('woff');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Neue Montreal';
+      src: url('/static/NeueMontreal.woff') format('woff');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --black:   #06060A;
+      --ink:     #0E0E14;
+      --card:    #111118;
+      --border:  rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.12);
+      --cyan:   #0256FE;
+      --cyan-dim:#0256FE;
+      --cyan-glow:#0256FE;
+      --white:   #F4F4F0;
+      --muted:   rgba(244,244,240,0.42);
+      --sub:     rgba(244,244,240,0.65);
+      --light-bg:#F0EFE8;
+      --light-ink:#1A1A22;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Neue Montreal', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    ::selection { background: var(--cyan); color: #000; }
+    ::-webkit-scrollbar { width: 2px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--cyan); }
+
+    /* ─── GRAIN ─── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.022;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ─── SCROLL PROGRESS ─── */
+    #prog {
+      position: fixed; top: 0; left: 0;
+      height: 2px; width: 0%;
+      background: linear-gradient(90deg, var(--cyan), #0099FF);
+      z-index: 2000;
+      box-shadow: 0 0 14px var(--cyan-glow);
+      transition: width 0.05s linear;
+    }
+
+    /* ─── CURSOR ─── */
+    #cur, #cur2 {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%,-50%);
+    }
+    #cur {
+      width: 44px; height: 44px;
+      border: 1.5px solid rgba(0,229,255,0.5);
+      transition: transform 0.25s cubic-bezier(.16,1,.3,1), opacity .3s;
+      mix-blend-mode: exclusion;
+    }
+    #cur2 {
+      width: 7px; height: 7px;
+      background: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan);
+      z-index: 9999;
+    }
+
+    /* ─── LOADER ─── */
+    #loader {
+      position: fixed; inset: 0;
+      background: var(--black);
+      z-index: 10000;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 2rem;
+      transition: opacity .8s .4s, visibility .8s .4s;
+    }
+    #loader.out { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .loader-wordmark {
+      overflow: hidden;
+      display: flex; flex-direction: column; align-items: center; gap: 0.1rem;
+    }
+    .loader-line {
+      font-family: 'Neue Montreal', serif;
+      overflow: hidden;
+    }
+    .loader-line span {
+      display: block;
+      transform: translateY(105%);
+      animation: slideUp .7s cubic-bezier(.16,1,.3,1) forwards;
+    }
+    .loader-line:nth-child(1) span { font-size: 1rem; font-weight: 400; letter-spacing: .3em; color: var(--muted); animation-delay: .1s; }
+    .loader-line:nth-child(2) span { font-size: 2.4rem; font-weight: 900; letter-spacing: -.01em; animation-delay: .22s; }
+    .loader-line:nth-child(3) span { font-size: 1.2rem; font-weight: 400; font-style: italic; color: var(--cyan); animation-delay: .34s; }
+
+    .loader-bar-track {
+      width: 180px; height: 1px;
+      background: rgba(255,255,255,0.1);
+      position: relative; overflow: hidden;
+    }
+    .loader-bar-fill {
+      position: absolute; left: 0; top: 0; height: 100%;
+      background: var(--cyan);
+      width: 0%;
+      animation: barFill 1.3s cubic-bezier(.16,1,.3,1) .3s forwards;
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    @keyframes slideUp { to { transform: translateY(0); } }
+    @keyframes barFill { to { width: 100%; } }
+
+    /* ─── TICKER ─── */
+    .ticker {
+      background: var(--cyan);
+      color: #000;
+      padding: .5rem 0;
+      overflow: hidden;
+      position: relative;
+      cursor: default;
+    }
+    .ticker::before, .ticker::after {
+      content: '';
+      position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2;
+      pointer-events: none;
+    }
+    .ticker::before { left: 0; background: linear-gradient(to right, var(--cyan), transparent); }
+    .ticker::after  { right: 0; background: linear-gradient(to left,  var(--cyan), transparent); }
+    .ticker-track {
+      display: flex;
+      animation: tickerMove 30s linear infinite;
+      width: max-content;
+    }
+    .ticker:hover .ticker-track { animation-play-state: paused; }
+    .ticker-item {
+      display: flex; align-items: center; gap: 1.2rem;
+      padding: 0 2.5rem;
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase;
+      white-space: nowrap; color: rgba(0,0,0,0.8);
+    }
+    .ticker-sep { width: 4px; height: 4px; background: rgba(0,0,0,0.4); border-radius: 50%; flex-shrink: 0; }
+    @keyframes tickerMove { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      height: 68px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem;
+      border-bottom: 1px solid transparent;
+      transition: background .4s, border-color .4s, backdrop-filter .4s;
+    }
+    nav.scrolled {
+      background: rgba(6,6,10,.88);
+      border-color: var(--border);
+      backdrop-filter: blur(20px);
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: .75rem;
+      text-decoration: none; color: var(--white);
+    }
+    .nav-brand-icon {
+      width: 34px; height: 34px; border-radius: 6px;
+      background: var(--cyan);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .3s, box-shadow .3s;
+    }
+    .nav-brand:hover .nav-brand-icon {
+      transform: rotate(-8deg) scale(1.05);
+      box-shadow: 0 0 20px var(--cyan-glow);
+    }
+    .nav-brand-name {
+      display: flex; flex-direction: column; line-height: 1.1;
+    }
+    .nav-brand-name .full {
+      font-family: 'Neue Montreal', serif;
+      font-weight: 700; font-size: .9rem; letter-spacing: .01em;
+    }
+    .nav-brand-name .abbr {
+      font-size: .6rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--muted); font-weight: 500;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 2.5rem; list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: .83rem; font-weight: 500; letter-spacing: .02em;
+      transition: color .3s; position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 1px; background: var(--cyan);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .3s cubic-bezier(.16,1,.3,1);
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-cta {
+      background: var(--cyan) !important; color: #000 !important;
+      padding: .5rem 1.1rem; border-radius: 5px; font-weight: 700 !important;
+      transition: box-shadow .3s, transform .2s !important;
+    }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover {
+      box-shadow: 0 0 28px var(--cyan-glow) !important;
+      transform: translateY(-1px);
+    }
+    #hbg {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 6px;
+    }
+    #hbg span {
+      display: block; width: 22px; height: 1.5px;
+      background: var(--white); border-radius: 2px;
+      transition: transform .3s, opacity .3s;
+    }
+    #hbg.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    #hbg.open span:nth-child(2) { opacity: 0; }
+    #hbg.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    #mob {
+      position: fixed; inset: 0; z-index: 490;
+      background: var(--black);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity .4s;
+    }
+    #mob.open { opacity: 1; pointer-events: all; }
+    #mob a {
+      font-family: 'Neue Montreal', serif;
+      font-size: clamp(2rem, 9vw, 3.5rem); font-weight: 700;
+      color: var(--muted); text-decoration: none;
+      transition: color .3s;
+    }
+    #mob a:hover { color: var(--white); }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100svh;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 6rem 2.5rem;
+      position: relative; overflow: hidden;
+    }
+
+    /* Video Background */
+    .hero-video-wrap {
+      position: absolute; inset: 0; z-index: 0;
+    }
+    .hero-video {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .hero-video-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(6, 6, 10, 0.75) 0%,
+        rgba(6, 6, 10, 0.55) 50%,
+        rgba(6, 6, 10, 0.85) 100%
+      );
+      z-index: 1;
+    }
+
+    /* Logo */
+    .hero-logo {
+      position: relative; z-index: 10;
+      width: clamp(180px, 35vw, 320px);
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeIn 1.2s ease-out 0.3s forwards;
+    }
+    .hero-logo svg {
+      width: 100%; height: auto;
+      filter: drop-shadow(0 0 40px rgba(0, 229, 255, 0.15));
+    }
+
+    /* Hero Title */
+    .hero-title {
+      position: relative; z-index: 10;
+      text-align: center;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeIn 1s ease-out 0.6s forwards;
+    }
+    .hero-title h1 {
+      font-family: 'Neue Montreal', sans-serif;
+      font-size: clamp(2.5rem, 8vw, 6rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      color: var(--white);
+      text-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    .hero-title span {
+      display: block;
+    }
+    .hero-title .accent {
+      color: var(--cyan);
+      text-shadow: 0 0 60px rgba(0, 229, 255, 0.4);
+    }
+
+    /* Hero Subtitle */
+    .hero-subtitle {
+      position: relative; z-index: 10;
+      text-align: center;
+      max-width: 600px;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeIn 1s ease-out 0.9s forwards;
+    }
+    .hero-subtitle p {
+      font-family: 'Neue Montreal', sans-serif;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      font-weight: 400;
+      line-height: 1.7;
+      color: var(--sub);
+    }
+
+    /* Hero CTA */
+    .hero-cta {
+      position: relative; z-index: 10;
+      display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center;
+      opacity: 0;
+      animation: fadeIn 1s ease-out 1.2s forwards;
+    }
+
+    .btn-main {
+      display: inline-flex; align-items: center; gap: .6rem;
+      background: var(--cyan); color: #000;
+      padding: 1rem 2.5rem; border-radius: 8px;
+      font-family: 'Neue Montreal', sans-serif;
+      font-size: 1rem; font-weight: 700; text-decoration: none;
+      transition: box-shadow .3s, transform .2s;
+      border: none; cursor: pointer;
+    }
+    .btn-main:hover {
+      box-shadow: 0 0 50px var(--cyan-glow), 0 8px 32px rgba(0,229,255,.3);
+      transform: translateY(-3px);
+    }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: .6rem;
+      color: var(--sub); text-decoration: none;
+      font-family: 'Neue Montreal', sans-serif;
+      font-size: 1rem; font-weight: 500;
+      padding: 1rem 2rem;
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      transition: color .3s, border-color .3s, background .3s;
+    }
+    .btn-outline:hover { 
+      color: var(--white); 
+      border-color: var(--cyan);
+      background: rgba(0, 229, 255, 0.08);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scroll Indicator */
+    .scroll-indicator {
+      position: absolute; bottom: 2.5rem; left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
+      opacity: 0;
+      animation: fadeIn 1s ease-out 1.5s forwards;
+    }
+    .scroll-indicator span {
+      font-family: 'Neue Montreal', sans-serif;
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .scroll-line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, var(--cyan), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.5; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    /* ─── MARQUEE ─── */
+    .marquee-wrap {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1.2rem 0; overflow: hidden;
+      background: linear-gradient(135deg, rgba(0,229,255,0.02), transparent);
+    }
+    .marquee-inner {
+      display: flex; animation: mq 22s linear infinite; width: max-content;
+    }
+    .marquee-wrap:hover .marquee-inner { animation-play-state: paused; }
+    .mq-item {
+      display: flex; align-items: center; gap: 1.5rem;
+      padding: 0 2.5rem; white-space: nowrap;
+    }
+    .mq-text {
+      font-family: 'Neue Montreal', serif;
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      font-weight: 700; letter-spacing: .02em;
+      color: var(--muted);
+    }
+    .mq-text.hi { color: var(--cyan); font-style: italic; }
+    .mq-div { width: 5px; height: 5px; background: var(--border2); border-radius: 50%; }
+    @keyframes mq { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ─── STICKY CHAPTERS ─── */
+    .chapters-section {
+      position: relative;
+    }
+    .chapters-outer {
+      display: flex;
+    }
+    /* Sticky left panel */
+    .chapters-nav {
+      width: 340px; flex-shrink: 0;
+      position: sticky; top: 68px;
+      height: calc(100vh - 68px);
+      padding: 4rem 2.5rem;
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; justify-content: center;
+      background: var(--ink);
+    }
+    .chapters-nav-label {
+      font-size: .68rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--cyan); margin-bottom: 2rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .chapters-nav-label::before { content: ''; width: 20px; height: 1px; background: var(--cyan); }
+    .chapters-nav-title {
+      font-family: 'Neue Montreal', serif;
+      font-size: 2.8rem; font-weight: 900; line-height: 1.05;
+      margin-bottom: 3rem;
+    }
+    .chapter-nav-items { display: flex; flex-direction: column; gap: 1rem; }
+    .chapter-nav-item {
+      display: flex; align-items: center; gap: .75rem;
+      font-size: .85rem; font-weight: 500; color: var(--muted);
+      transition: color .3s; cursor: default;
+    }
+    .chapter-nav-item.active { color: var(--white); }
+    .chapter-nav-item .cn-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      border: 1.5px solid var(--muted);
+      transition: background .3s, border-color .3s, box-shadow .3s;
+      flex-shrink: 0;
+    }
+    .chapter-nav-item.active .cn-dot {
+      background: var(--cyan); border-color: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan-glow);
+    }
+    .chapter-nav-item .cn-line {
+      flex: 1; height: 1px; background: var(--border);
+      transition: background .3s;
+    }
+    .chapter-nav-item.active .cn-line { background: rgba(0,229,255,.3); }
+
+    /* Scrollable right panel */
+    .chapters-scroll { flex: 1; }
+    .chapter-panel {
+      min-height: 100vh;
+      padding: 5rem 4rem;
+      display: flex; flex-direction: column; justify-content: center;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      transition: background .6s;
+    }
+    .chapter-panel:last-child { border-bottom: none; }
+    .chapter-num {
+      font-family: 'Neue Montreal', serif;
+      font-size: 8rem; font-weight: 900; line-height: 1;
+      color: rgba(255,255,255,0.04);
+      position: absolute; top: 3rem; right: 3rem;
+      user-select: none; pointer-events: none;
+      transition: color .4s;
+    }
+    .chapter-panel.active .chapter-num { color: rgba(0,229,255,0.06); }
+    .chapter-tag {
+      font-size: .68rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--cyan); margin-bottom: 1.2rem;
+    }
+    .chapter-title {
+      font-family: 'Neue Montreal', serif;
+      font-size: clamp(2rem, 4.5vw, 3.5rem);
+      font-weight: 900; line-height: 1.1;
+      margin-bottom: 2rem;
+      max-width: 600px;
+    }
+    .chapter-body {
+      font-size: 1.05rem; font-weight: 300; line-height: 1.8;
+      color: var(--sub); max-width: 580px; margin-bottom: 2rem;
+    }
+    .chapter-body strong { color: var(--white); font-weight: 600; }
+    .chapter-callout {
+      background: var(--cyan-dim);
+      border-left: 3px solid var(--cyan);
+      padding: 1.5rem 2rem;
+      border-radius: 0 6px 6px 0;
+      max-width: 520px;
+      margin-top: 1.5rem;
+    }
+    .chapter-callout p {
+      font-family: 'Neue Montreal', serif;
+      font-size: 1.15rem; font-style: italic;
+      color: var(--white); line-height: 1.6;
+    }
+    .chapter-stat-row {
+      display: flex; gap: 2.5rem; margin-top: 2rem; flex-wrap: wrap;
+    }
+    .cs {
+      padding: 1.2rem 1.8rem;
+      border: 1px solid var(--border); border-radius: 6px;
+      background: rgba(255,255,255,0.02);
+    }
+    .cs-n {
+      font-family: 'Neue Montreal', serif;
+      font-size: 2.2rem; font-weight: 900; color: var(--cyan);
+    }
+    .cs-l {
+      font-size: .72rem; font-weight: 600; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--muted); margin-top: .25rem;
+    }
+
+    /* ─── HORIZONTAL SCROLL FEATURES ─── */
+    .hscroll-section {
+      position: relative;
+    }
+    .hscroll-sticky {
+      position: sticky; top: 68px;
+      height: calc(100vh - 68px);
+      overflow: hidden;
+      background: var(--light-bg);
+      color: var(--light-ink);
+      display: flex; flex-direction: column;
+    }
+    .hscroll-header {
+      padding: 3rem 3rem 1.5rem;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem;
+      flex-shrink: 0;
+    }
+    .hscroll-header-left {}
+    .hscroll-section-label {
+      font-size: .68rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--cyan); display: flex; align-items: center; gap: .5rem;
+      margin-bottom: .75rem;
+    }
+    .hscroll-section-label::before { content: ''; width: 20px; height: 1px; background: var(--cyan); }
+    .hscroll-title {
+      font-family: 'Neue Montreal', serif;
+      font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 900;
+      color: var(--light-ink); line-height: 1.05;
+    }
+    .hscroll-progress-bar {
+      width: 200px; height: 2px;
+      background: rgba(0,0,0,0.1);
+      border-radius: 2px; overflow: hidden;
+      flex-shrink: 0; margin-bottom: .3rem;
+    }
+    .hscroll-progress-fill {
+      height: 100%; background: var(--cyan);
+      border-radius: 2px;
+      width: 0%;
+      transition: width .3s cubic-bezier(.16,1,.3,1);
+      box-shadow: 0 0 8px var(--cyan-glow);
+    }
+    .hscroll-counter {
+      font-size: .8rem; font-weight: 600; color: rgba(0,0,0,0.35);
+      text-align: right; margin-top: .2rem;
+    }
+
+    .hscroll-track-wrap {
+      flex: 1; overflow: hidden; position: relative;
+    }
+    .hscroll-track {
+      display: flex; height: 100%;
+      transition: transform .7s cubic-bezier(.77,0,.175,1);
+    }
+    .hscroll-card {
+      min-width: 100%; height: 100%;
+      padding: 2.5rem 3rem;
+      display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; align-items: center;
+    }
+    .hscroll-card-body {}
+    .hscroll-card-icon {
+      width: 56px; height: 56px; border-radius: 12px;
+      background: var(--cyan); display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.8rem;
+      box-shadow: 0 0 24px var(--cyan-glow);
+    }
+    .hscroll-card-num {
+      font-family: 'Neue Montreal', serif;
+      font-size: .8rem; font-weight: 700; letter-spacing: .1em;
+      color: rgba(0,0,0,0.3); margin-bottom: .5rem;
+    }
+    .hscroll-card h3 {
+      font-family: 'Neue Montreal', serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 900;
+      color: var(--light-ink); line-height: 1.1; margin-bottom: 1.2rem;
+    }
+    .hscroll-card p {
+      font-size: 1rem; font-weight: 300; line-height: 1.75;
+      color: rgba(26,26,34,0.6); max-width: 420px; margin-bottom: 1.5rem;
+    }
+    .feature-tags { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .ftag {
+      background: rgba(0,0,0,0.07);
+      color: rgba(0,0,0,0.5);
+      padding: .3rem .9rem; border-radius: 100px;
+      font-size: .78rem; font-weight: 600;
+    }
+    .hscroll-card-visual {
+      display: flex; align-items: center; justify-content: center;
+    }
+    .feature-mockup {
+      width: 100%; max-width: 340px;
+      background: var(--light-ink);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .fm-bar {
+      height: 44px; padding: 0 1.2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .fm-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .fm-body { padding: 1.5rem; }
+    .fm-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .75rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .fm-row:last-child { border-bottom: none; }
+    .fm-row-label { font-size: .75rem; color: rgba(255,255,255,0.45); }
+    .fm-row-val { font-size: .85rem; font-weight: 600; color: var(--white); }
+    .fm-row-val.cyan { color: var(--cyan); }
+    .fm-bar-fill { height: 4px; border-radius: 2px; margin-top: .3rem; }
+    .fm-chart { margin-top: 1rem; }
+    .fm-chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 60px; }
+    .fm-bar-item { flex: 1; border-radius: 3px 3px 0 0; min-height: 8px; }
+    .fm-chart-labels { display: flex; gap: 6px; margin-top: 4px; }
+    .fm-chart-label { flex: 1; font-size: .5rem; color: rgba(255,255,255,0.3); text-align: center; }
+
+    /* Spacer to enable hscroll triggering */
+    .hscroll-spacer { height: 300vh; }
+
+    /* ─── SPLIT MANIFESTO ─── */
+    .split-section {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 80vh;
+    }
+    .split-dark {
+      background: var(--ink);
+      padding: clamp(3rem,8vw,7rem) clamp(2rem,5vw,5rem);
+      display: flex; flex-direction: column; justify-content: center;
+      border-right: 1px solid var(--border);
+    }
+    .split-light {
+      background: var(--light-bg);
+      padding: clamp(3rem,8vw,7rem) clamp(2rem,5vw,5rem);
+      display: flex; flex-direction: column; justify-content: center;
+      color: var(--light-ink);
+    }
+    .split-label {
+      font-size: .68rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
+      margin-bottom: 1.5rem; display: flex; align-items: center; gap: .5rem;
+    }
+    .split-dark .split-label { color: var(--cyan); }
+    .split-dark .split-label::before { content: ''; width: 20px; height: 1px; background: var(--cyan); }
+    .split-light .split-label { color: var(--cyan); }
+    .split-light .split-label::before { content: ''; width: 20px; height: 1px; background: var(--cyan); }
+    .split-title {
+      font-family: 'Neue Montreal', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 900; line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .split-body {
+      font-size: 1rem; font-weight: 300; line-height: 1.8;
+      color: var(--sub); margin-bottom: 1.5rem;
+    }
+    .split-light .split-body { color: rgba(26,26,34,0.55); }
+    .split-list { list-style: none; display: flex; flex-direction: column; gap: .8rem; }
+    .split-list li {
+      display: flex; align-items: flex-start; gap: .75rem;
+      font-size: .92rem; line-height: 1.5;
+    }
+    .split-dark .split-list li { color: var(--sub); }
+    .split-light .split-list li { color: rgba(26,26,34,0.6); }
+    .sl-check {
+      width: 16px; height: 16px; background: var(--cyan);
+      border-radius: 3px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+    }
+
+    /* ─── AD CAROUSEL ─── */
+    .ad-section {
+      background: var(--ink);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 2.5rem;
+    }
+    .ad-inner { max-width: 1440px; margin: 0 auto; }
+    .ad-tag {
+      font-size: .62rem; font-weight: 700; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--muted);
+      text-align: center; margin-bottom: 1.5rem;
+    }
+    .ad-car {
+      position: relative; overflow: hidden;
+      border: 1px solid var(--border); border-radius: 10px;
+    }
+    .ad-track { display: flex; transition: transform .7s cubic-bezier(.77,0,.175,1); }
+    .ad-slide {
+      min-width: 100%;
+      padding: 2.5rem 3rem;
+      background: linear-gradient(135deg, rgba(0,229,255,0.04), transparent);
+      display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .ad-slide h4 {
+      font-family: 'Neue Montreal', serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem); font-weight: 800;
+      margin-bottom: .6rem;
+    }
+    .ad-slide p { font-size: .88rem; color: var(--muted); max-width: 480px; line-height: 1.6; }
+    .ad-btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: var(--cyan); color: #000;
+      padding: .65rem 1.3rem; border-radius: 5px;
+      font-size: .85rem; font-weight: 700; text-decoration: none;
+      white-space: nowrap;
+      transition: box-shadow .3s, transform .2s;
+    }
+    .ad-btn:hover { box-shadow: 0 0 20px var(--cyan-glow); transform: translateY(-1px); }
+    .ad-dots { display: flex; justify-content: center; gap: 8px; margin-top: 1.5rem; }
+    .ad-dot {
+      width: 6px; height: 6px; border-radius: 3px;
+      background: var(--border); cursor: pointer;
+      transition: background .3s, width .3s;
+    }
+    .ad-dot.on { background: var(--cyan); width: 22px; }
+
+    /* ─── CTA ─── */
+    .cta-wrap {
+      background: var(--cyan);
+      color: #000;
+      position: relative; overflow: hidden;
+      padding: clamp(4rem,10vw,8rem) 2.5rem;
+    }
+    .cta-bg-word {
+      position: absolute; bottom: -2rem; left: 0; right: 0;
+      font-family: 'Neue Montreal', serif;
+      font-size: clamp(5rem, 18vw, 16rem); font-weight: 900;
+      line-height: 1; letter-spacing: -.02em;
+      color: rgba(0,0,0,0.06);
+      white-space: nowrap; user-select: none; overflow: hidden;
+    }
+    .cta-inner {
+      max-width: 1440px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+      position: relative;
+    }
+    .cta-title {
+      font-family: 'Neue Montreal', serif;
+      font-size: clamp(3rem, 7vw, 6.5rem); font-weight: 900; line-height: 1; margin-bottom: 1.5rem;
+    }
+    .cta-sub { font-size: 1.05rem; font-weight: 300; opacity: .7; line-height: 1.65; }
+    .cta-form { display: flex; flex-direction: column; gap: 1rem; }
+    .cta-input {
+      width: 100%; background: rgba(0,0,0,0.15);
+      border: 1.5px solid rgba(0,0,0,0.2);
+      border-radius: 7px; padding: 1rem 1.5rem;
+      font-size: 1rem; font-family: 'DM Sans', sans-serif;
+      color: #000; outline: none;
+      transition: border-color .3s, box-shadow .3s;
+    }
+    .cta-input::placeholder { color: rgba(0,0,0,0.35); }
+    .cta-input:focus { border-color: rgba(0,0,0,0.5); box-shadow: 0 0 0 4px rgba(0,0,0,0.08); }
+    .cta-btn {
+      width: 100%; background: #000; color: var(--cyan);
+      border: none; border-radius: 7px;
+      padding: 1rem 2rem; font-size: 1rem; font-weight: 700;
+      font-family: 'DM Sans', sans-serif; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: .6rem;
+      transition: background .3s, transform .2s, box-shadow .3s;
+    }
+    .cta-btn:hover { background: #0d0d0d; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.25); }
+    .cta-note { font-size: .78rem; opacity: .5; text-align: center; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--black);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2.5rem;
+    }
+    .foot-inner {
+      max-width: 1440px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap;
+    }
+    .foot-brand {
+      display: flex; align-items: center; gap: .75rem;
+      text-decoration: none; color: var(--white);
+    }
+    .foot-brand-icon {
+      width: 30px; height: 30px; border-radius: 5px; background: var(--cyan);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .foot-brand-name { font-family: 'Neue Montreal', serif; font-weight: 700; font-size: .95rem; }
+    .foot-links { display: flex; gap: 2rem; list-style: none; flex-wrap: wrap; }
+    .foot-links a {
+      color: var(--muted); text-decoration: none; font-size: .82rem;
+      transition: color .3s;
+    }
+    .foot-links a:hover { color: var(--white); }
+    .foot-copy { font-size: .78rem; color: var(--muted); }
+
+    /* ─── REVEAL ─── */
+    .r { opacity: 0; transform: translateY(44px); transition: opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
+    .rl { opacity: 0; transform: translateX(-44px); transition: opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
+    .rr { opacity: 0; transform: translateX(44px); transition: opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
+    .rs { opacity: 0; transform: scale(.93); transition: opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
+    .r.v, .rl.v, .rr.v, .rs.v { opacity: 1; transform: none; }
+    .d1 { transition-delay: .1s; }
+    .d2 { transition-delay: .2s; }
+    .d3 { transition-delay: .3s; }
+    .d4 { transition-delay: .45s; }
+    .d5 { transition-delay: .6s; }
+
+    /* line sep */
+    .lsep { width: 100%; height: 1px; background: var(--border); transform: scaleX(0); transform-origin: left; transition: transform 1.2s cubic-bezier(.16,1,.3,1); }
+    .lsep.v { transform: scaleX(1); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1100px) {
+      .chapters-nav { width: 260px; padding: 3rem 1.75rem; }
+      .chapter-panel { padding: 4rem 2.5rem; }
+      .hscroll-card { grid-template-columns: 1fr; }
+      .hscroll-card-visual { display: none; }
+    }
+    @media (max-width: 900px) {
+      .chapters-outer { flex-direction: column; }
+      .chapters-nav {
+        position: relative; top: auto;
+        width: 100%; height: auto;
+        padding: 2.5rem 1.5rem;
+        border-right: none; border-bottom: 1px solid var(--border);
+      }
+      .chapter-nav-items { flex-direction: row; flex-wrap: wrap; gap: .5rem; }
+      .chapter-nav-item .cn-line { display: none; }
+      .chapter-panel { padding: 3.5rem 1.5rem; min-height: auto; padding-top: 3rem; }
+      .chapter-num { font-size: 5rem; top: 1rem; right: 1rem; }
+      .split-section { grid-template-columns: 1fr; }
+      .split-dark { border-right: none; border-bottom: 1px solid rgba(0,0,0,0.1); }
+      .cta-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .hero-lower { grid-template-columns: 1fr; gap: 2.5rem; }
+      .hero-stats { grid-template-columns: 1fr 1fr; }
+      nav { padding: 0 1.5rem; }
+      .nav-links { display: none; }
+      #hbg { display: flex; }
+      .hscroll-header { padding: 2rem 1.5rem 1rem; }
+      .hscroll-card { padding: 2rem 1.5rem; }
+    }
+    @media (max-width: 600px) {
+      .hero { padding: 5.5rem 1.25rem 4rem; }
+      .hero-stats { grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .hero-wordmark .line-budget,
+      .hero-wordmark .line-ndio,
+      .hero-wordmark .line-story { font-size: clamp(3.5rem, 17vw, 4.5rem); }
+      .chapter-stat-row { flex-direction: column; gap: 1rem; }
+      .hscroll-spacer { height: 250vh; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loader -->
+<div id="loader">
+  <div class="loader-wordmark">
+    <div class="loader-line"><span>KENYA BUDGET TRANSPARENCY</span></div>
+    <div class="loader-line"><span>Budget Ndio Story</span></div>
+    <div class="loader-line"><span>Follow the money. Find the story.</span></div>
+  </div>
+  <div class="loader-bar-track"><div class="loader-bar-fill"></div></div>
+</div>
+
+<!-- Scroll Progress -->
+<div id="prog"></div>
+
+<!-- Custom Cursor -->
+<div id="cur"></div>
+<div id="cur2"></div>
+
+<!-- Nav -->
+<nav id="nav">
+  <a href="#" class="nav-brand">
+    <div class="nav-brand-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </div>
+    <div class="nav-brand-name">
+      <span class="full">Budget Ndio Story</span>
+      <span class="abbr">Kenya Budget Transparency</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#chapters">The Problem</a></li>
+    <li><a href="#platform">Platform</a></li>
+    <li><a href="#approach">Approach</a></li>
+    <li><a href="#contact" class="nav-cta">Get Early Access</a></li>
+  </ul>
+  <button id="hbg" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mob">
+  <a href="#chapters" class="mob-l">The Problem</a>
+  <a href="#platform" class="mob-l">Platform</a>
+  <a href="#approach" class="mob-l">Approach</a>
+  <a href="#contact" class="mob-l">Early Access</a>
+</div>
+
+<!-- Ticker -->
+<div class="ticker" style="margin-top:68px;">
+  <div class="ticker-track" id="tk">
+    <div class="ticker-item"><div class="ticker-sep"></div>KENYA BUDGET 2025/26 — FULL ANALYSIS COMING</div>
+    <div class="ticker-item"><div class="ticker-sep"></div>47 COUNTIES · ALL DATA VERIFIED</div>
+    <div class="ticker-item"><div class="ticker-sep"></div>KSh 4 TRILLION NATIONAL BUDGET TRACKED</div>
+    <div class="ticker-item"><div class="ticker-sep"></div>100% FREE — FOREVER</div>
+    <div class="ticker-item"><div class="ticker-sep"></div>FOLLOW THE MONEY · FIND THE STORY</div>
+    <div class="ticker-item"><div class="ticker-sep"></div>LAUNCHING Q2 2026 · JOIN WAITLIST</div>
+    <div class="ticker-item"><div class="ticker-sep"></div>BUDGET NDIO STORY · KENYA BUDGET DECODED</div>
+    <!-- dup -->
+    <div class="ticker-item"><div class="ticker-sep"></div>KENYA BUDGET 2025/26 — FULL ANALYSIS COMING</div>
+    <div class="ticker-item"><div class="ticker-sep"></div>47 COUNTIES · ALL DATA VERIFIED</div>
+    <div class="ticker-item"><div class="ticker-sep"></div>KSh 4 TRILLION NATIONAL BUDGET TRACKED</div>
+    <div class="ticker-item"><div class="ticker-sep"></div>100% FREE — FOREVER</div>
+    <div class="ticker-item"><div class="ticker-sep"></div>FOLLOW THE MONEY · FIND THE STORY</div>
+    <div class="ticker-item"><div class="ticker-sep"></div>LAUNCHING Q2 2026 · JOIN WAITLIST</div>
+    <div class="ticker-item"><div class="ticker-sep"></div>BUDGET NDIO STORY · KENYA BUDGET DECODED</div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-video-wrap">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="/static/bns001.mp4" type="video/mp4">
+    </video>
+    <div class="hero-video-overlay"></div>
+  </div>
+
+  <div class="hero-logo">
+    <img src="/static/logo.svg" alt="Budget Ndio Story" />
+  </div>
+
+  <div class="hero-title">
+    <h1>
+      <span>Budget</span>
+      <span class="accent">Ndio Story</span>
+    </h1>
+  </div>
+
+  <div class="hero-subtitle">
+    <p>Kenya's budget decoded for the next generation. Follow the money. Find the story. Hold power accountable.</p>
+  </div>
+
+  <div class="hero-cta">
+    <a href="#contact" class="btn-main">
+      Join Early Access
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </a>
+    <a href="#chapters" class="btn-outline">
+      Read our story
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+    </a>
+  </div>
+
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    <div class="mq-item">
+      <span class="mq-text">Follow the Money</span><div class="mq-div"></div>
+      <span class="mq-text hi">Find the Story</span><div class="mq-div"></div>
+      <span class="mq-text">Budget Ndio Story</span><div class="mq-div"></div>
+      <span class="mq-text hi">Kenya Budget Decoded</span><div class="mq-div"></div>
+      <span class="mq-text">Hold Power Accountable</span><div class="mq-div"></div>
+      <span class="mq-text hi">47 Counties. One Platform.</span><div class="mq-div"></div>
+    </div>
+    <div class="mq-item">
+      <span class="mq-text">Follow the Money</span><div class="mq-div"></div>
+      <span class="mq-text hi">Find the Story</span><div class="mq-div"></div>
+      <span class="mq-text">Budget Ndio Story</span><div class="mq-div"></div>
+      <span class="mq-text hi">Kenya Budget Decoded</span><div class="mq-div"></div>
+      <span class="mq-text">Hold Power Accountable</span><div class="mq-div"></div>
+      <span class="mq-text hi">47 Counties. One Platform.</span><div class="mq-div"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── STICKY CHAPTERS ─── -->
+<section id="chapters" class="chapters-section">
+  <div class="chapters-outer">
+
+    <!-- Sticky Left Nav -->
+    <div class="chapters-nav">
+      <p class="chapters-nav-label">01 — The Problem</p>
+      <h2 class="chapters-nav-title">Why Kenya<br>Needs This</h2>
+      <div class="chapter-nav-items" id="chapNav">
+        <div class="chapter-nav-item active" data-ch="0">
+          <div class="cn-dot"></div>
+          <span>The Scale</span>
+          <div class="cn-line"></div>
+        </div>
+        <div class="chapter-nav-item" data-ch="1">
+          <div class="cn-dot"></div>
+          <span>The Gap</span>
+          <div class="cn-line"></div>
+        </div>
+        <div class="chapter-nav-item" data-ch="2">
+          <div class="cn-dot"></div>
+          <span>The Cost</span>
+          <div class="cn-line"></div>
+        </div>
+        <div class="chapter-nav-item" data-ch="3">
+          <div class="cn-dot"></div>
+          <span>Our Answer</span>
+          <div class="cn-line"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scrollable Panels -->
+    <div class="chapters-scroll" id="chapScroll">
+
+      <div class="chapter-panel" data-panel="0">
+        <div class="chapter-num">01</div>
+        <div class="chapter-tag">Chapter 01 — The Scale</div>
+        <h3 class="chapter-title">Kenya's budget is one of Africa's largest. Almost no one can read it.</h3>
+        <div class="chapter-body">
+          Every year, Kenya's national government allocates more than <strong>KSh 4 trillion</strong> in public funds. County governments — all 47 of them — control an additional <strong>KSh 500 billion</strong> in devolved revenue. That is more money than most Kenyans will earn in multiple lifetimes.
+          <br><br>
+          These budgets are, by law, public documents. The Controller of Budget publishes quarterly reports. The Auditor General releases annual findings. The National Treasury posts budget statements online. Everything is technically available.
+        </div>
+        <div class="chapter-callout">
+          <p>"The budget is a moral document. It tells you who a government thinks matters — and who it has decided can wait."</p>
+        </div>
+        <div class="chapter-stat-row">
+          <div class="cs"><div class="cs-n">4.3T</div><div class="cs-l">KSh National Budget 2024/25</div></div>
+          <div class="cs"><div class="cs-n">500B</div><div class="cs-l">KSh Devolved to Counties</div></div>
+          <div class="cs"><div class="cs-n">47</div><div class="cs-l">County Governments</div></div>
+        </div>
+      </div>
+
+      <div class="chapter-panel" data-panel="1">
+        <div class="chapter-num">02</div>
+        <div class="chapter-tag">Chapter 02 — The Gap</div>
+        <h3 class="chapter-title">The information exists. But it was never designed to be understood.</h3>
+        <div class="chapter-body">
+          Kenya's budget documents are written by and for bureaucrats. They are dense, technical, and deliberately obscure. A single Appropriation Bill can run to <strong>over 300 pages</strong> of code-referenced line items. County budget documents are often posted as poorly-scanned PDFs — if they are posted at all.
+          <br><br>
+          The result is a profound transparency gap. Citizens have a legal right to this information. But without the tools to understand it, that right is meaningless. Journalists file FOI requests for data that has been public for years. Activists attend county budget forums without the context needed to ask meaningful questions.
+        </div>
+        <div class="chapter-callout">
+          <p>"Transparency without comprehension is just compliance. We want to close the gap between what governments publish and what citizens understand."</p>
+        </div>
+        <div class="chapter-stat-row">
+          <div class="cs"><div class="cs-n">300+</div><div class="cs-l">Pages per Appropriation Bill</div></div>
+          <div class="cs"><div class="cs-n">&lt;12%</div><div class="cs-l">Citizens who've read a budget</div></div>
+        </div>
+      </div>
+
+      <div class="chapter-panel" data-panel="2">
+        <div class="chapter-num">03</div>
+        <div class="chapter-tag">Chapter 03 — The Cost</div>
+        <h3 class="chapter-title">When citizens can't follow the money, the money follows itself.</h3>
+        <div class="chapter-body">
+          The Auditor General's reports year after year reveal the same patterns: <strong>unaccounted-for funds</strong>, projects funded but never built, procurement irregularities in plain sight. In FY 2022/23 alone, the Auditor flagged billions in unexplained expenditures across counties.
+          <br><br>
+          This is not a problem of information scarcity. Kenya has more public finance data than ever before. It is a problem of access, literacy, and engagement. The missing link is a platform that bridges verified government data with the citizens it serves.
+        </div>
+        <div class="chapter-callout">
+          <p>"Every unread audit report is a silent permission slip for waste. Budget Ndio Story exists to read them — loudly."</p>
+        </div>
+        <div class="chapter-stat-row">
+          <div class="cs"><div class="cs-n">Bns</div><div class="cs-l">Flagged in KE Audits 22/23</div></div>
+          <div class="cs"><div class="cs-n">0</div><div class="cs-l">Freely accessible audit dashboards pre-BNS</div></div>
+        </div>
+      </div>
+
+      <div class="chapter-panel" data-panel="3">
+        <div class="chapter-num">04</div>
+        <div class="chapter-tag">Chapter 04 — Our Answer</div>
+        <h3 class="chapter-title">Budget Ndio Story: Kenya's budget, decoded for everyone.</h3>
+        <div class="chapter-body">
+          Budget Ndio Story is a platform, a publication, and a civic education project built for the next generation of Kenyan citizens. We do three things: <strong>investigate</strong> (obtain and verify every major budget document), <strong>translate</strong> (turn raw data into visual, accessible stories), and <strong>activate</strong> (build tools for public participation at the county level).
+          <br><br>
+          Everything we produce is free. We will never paywall public interest information. From data visualisations of the healthcare budget to ward-level expenditure trackers — if it concerns public money, it belongs to the public.
+        </div>
+        <div class="chapter-callout">
+          <p>"Free. Always. Because transparency should never require a subscription."</p>
+        </div>
+        <div class="chapter-stat-row">
+          <div class="cs"><div class="cs-n">Free</div><div class="cs-l">Access. Forever.</div></div>
+          <div class="cs"><div class="cs-n">47</div><div class="cs-l">County Trackers at launch</div></div>
+          <div class="cs"><div class="cs-n">Q2 '26</div><div class="cs-l">Platform Launch</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── HORIZONTAL SCROLL PLATFORM ─── -->
+<div id="platform" class="hscroll-section">
+  <div class="hscroll-spacer" id="hspacer"></div>
+  <div class="hscroll-sticky" id="hsticky">
+    <div class="hscroll-header">
+      <div class="hscroll-header-left">
+        <p class="hscroll-section-label">02 — The Platform</p>
+        <h2 class="hscroll-title">What We're<br>Building</h2>
+      </div>
+      <div>
+        <div class="hscroll-progress-bar">
+          <div class="hscroll-progress-fill" id="hpFill"></div>
+        </div>
+        <div class="hscroll-counter" id="hpCount">01 / 04</div>
+      </div>
+    </div>
+
+    <div class="hscroll-track-wrap">
+      <div class="hscroll-track" id="htrack">
+
+        <!-- Card 1 -->
+        <div class="hscroll-card">
+          <div class="hscroll-card-body">
+            <div class="hscroll-card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            </div>
+            <p class="hscroll-card-num">01 / 04</p>
+            <h3>County Budget<br>Tracker Dashboard</h3>
+            <p>A live, interactive dashboard tracking expenditure across all 47 counties. Filter by sector, quarter, and ward. Compare allocations vs. actual spending. Spot the gap.</p>
+            <div class="feature-tags">
+              <span class="ftag">47 Counties</span>
+              <span class="ftag">Live Data</span>
+              <span class="ftag">Sector Filters</span>
+              <span class="ftag">Ward-Level</span>
+            </div>
+          </div>
+          <div class="hscroll-card-visual">
+            <div class="feature-mockup">
+              <div class="fm-bar">
+                <div class="fm-dot" style="background:#ff5f57"></div>
+                <div class="fm-dot" style="background:#febc2e;margin-left:6px"></div>
+                <div class="fm-dot" style="background:#28c840;margin-left:6px"></div>
+              </div>
+              <div class="fm-body">
+                <div style="font-size:.65rem;color:rgba(255,255,255,0.3);margin-bottom:.75rem;letter-spacing:.1em;text-transform:uppercase;">Nairobi County · Q3 2025</div>
+                <div class="fm-row"><span class="fm-row-label">Health Allocated</span><span class="fm-row-val">KSh 4.2B</span></div>
+                <div class="fm-row"><span class="fm-row-label">Health Spent</span><span class="fm-row-val cyan">KSh 2.8B</span></div>
+                <div class="fm-bar-fill" style="background:linear-gradient(90deg,#00E5FF,#0099FF);width:67%;"></div>
+                <div class="fm-row" style="margin-top:.75rem"><span class="fm-row-label">Roads Allocated</span><span class="fm-row-val">KSh 6.1B</span></div>
+                <div class="fm-row"><span class="fm-row-label">Roads Spent</span><span class="fm-row-val" style="color:#ff6b6b">KSh 1.1B</span></div>
+                <div class="fm-bar-fill" style="background:#ff6b6b;width:18%;"></div>
+                <div class="fm-chart">
+                  <div style="font-size:.6rem;color:rgba(255,255,255,0.25);margin-bottom:.5rem;letter-spacing:.08em;text-transform:uppercase;">Monthly Disbursements</div>
+                  <div class="fm-chart-bars">
+                    <div class="fm-bar-item" style="height:30%;background:rgba(0,229,255,0.3)"></div>
+                    <div class="fm-bar-item" style="height:55%;background:rgba(0,229,255,0.4)"></div>
+                    <div class="fm-bar-item" style="height:40%;background:rgba(0,229,255,0.35)"></div>
+                    <div class="fm-bar-item" style="height:70%;background:var(--cyan)"></div>
+                    <div class="fm-bar-item" style="height:45%;background:rgba(0,229,255,0.4)"></div>
+                    <div class="fm-bar-item" style="height:85%;background:var(--cyan)"></div>
+                    <div class="fm-bar-item" style="height:60%;background:rgba(0,229,255,0.5)"></div>
+                  </div>
+                  <div class="fm-chart-labels">
+                    <span class="fm-chart-label">Jul</span><span class="fm-chart-label">Aug</span>
+                    <span class="fm-chart-label">Sep</span><span class="fm-chart-label">Oct</span>
+                    <span class="fm-chart-label">Nov</span><span class="fm-chart-label">Dec</span>
+                    <span class="fm-chart-label">Jan</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="hscroll-card">
+          <div class="hscroll-card-body">
+            <div class="hscroll-card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+            <p class="hscroll-card-num">02 / 04</p>
+            <h3>Visual Budget<br>Reports</h3>
+            <p>Annual and supplementary budget reports transformed into beautiful, shareable visual documents. Every ministry, every programme, every allocation — made legible for anyone willing to look.</p>
+            <div class="feature-tags">
+              <span class="ftag">National Budget</span>
+              <span class="ftag">Sector Reports</span>
+              <span class="ftag">Shareable</span>
+              <span class="ftag">Downloadable</span>
+            </div>
+          </div>
+          <div class="hscroll-card-visual">
+            <div class="feature-mockup">
+              <div class="fm-bar">
+                <div class="fm-dot" style="background:#ff5f57"></div>
+                <div class="fm-dot" style="background:#febc2e;margin-left:6px"></div>
+                <div class="fm-dot" style="background:#28c840;margin-left:6px"></div>
+              </div>
+              <div class="fm-body">
+                <div style="font-size:.65rem;color:rgba(255,255,255,0.3);margin-bottom:.75rem;letter-spacing:.1em;text-transform:uppercase;">Health Sector · FY 2025/26</div>
+                <div style="display:flex;gap:6px;margin-bottom:1rem;">
+                  <div style="flex:3;background:var(--cyan);height:8px;border-radius:2px;"></div>
+                  <div style="flex:2;background:rgba(0,229,255,0.4);height:8px;border-radius:2px;"></div>
+                  <div style="flex:1;background:rgba(0,229,255,0.2);height:8px;border-radius:2px;"></div>
+                </div>
+                <div class="fm-row"><span class="fm-row-label">Primary Healthcare</span><span class="fm-row-val cyan">42%</span></div>
+                <div class="fm-row"><span class="fm-row-label">Hospitals & Referrals</span><span class="fm-row-val">31%</span></div>
+                <div class="fm-row"><span class="fm-row-label">Pharmaceuticals</span><span class="fm-row-val">18%</span></div>
+                <div class="fm-row"><span class="fm-row-label">Administration</span><span class="fm-row-val" style="color:#ff9944">9%</span></div>
+                <div style="margin-top:1rem;padding:.75rem;background:rgba(0,229,255,0.06);border-radius:4px;border:1px solid rgba(0,229,255,0.15);">
+                  <div style="font-size:.65rem;color:var(--cyan);font-weight:700;">KEY FINDING</div>
+                  <div style="font-size:.72rem;color:rgba(255,255,255,0.55);margin-top:.3rem;line-height:1.5;">Admin spend up 22% YoY while primary care allocation fell 8%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="hscroll-card">
+          <div class="hscroll-card-body">
+            <div class="hscroll-card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            </div>
+            <p class="hscroll-card-num">03 / 04</p>
+            <h3>Video Explainer<br>Series</h3>
+            <p>Short-form videos that break down Kenya's budget for a social media generation. Complex fiscal policy explained in under three minutes — with graphics, context, and no jargon allowed.</p>
+            <div class="feature-tags">
+              <span class="ftag">YouTube</span>
+              <span class="ftag">Instagram Reels</span>
+              <span class="ftag">TikTok</span>
+              <span class="ftag">Budget Breakdowns</span>
+            </div>
+          </div>
+          <div class="hscroll-card-visual">
+            <div class="feature-mockup" style="background:#000;border-radius:20px;overflow:hidden;max-width:220px;">
+              <div style="background:linear-gradient(180deg,rgba(0,229,255,0.15),rgba(0,0,0,0.9)),linear-gradient(135deg,#0d0d14,#111118);aspect-ratio:9/16;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:1.5rem;position:relative;">
+                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:52px;background:rgba(0,229,255,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="#000"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </div>
+                <div style="position:absolute;top:1rem;left:1rem;right:1rem;">
+                  <div style="font-size:.55rem;color:rgba(255,255,255,0.5);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">BUDGET NDIO STORY</div>
+                  <div style="font-size:.75rem;font-weight:700;line-height:1.3;color:#fff;">Where Did Kenya's Health Budget Go in 2025?</div>
+                </div>
+                <div style="width:100%;">
+                  <div style="height:2px;background:rgba(255,255,255,0.2);border-radius:2px;margin-bottom:.5rem;">
+                    <div style="height:100%;width:35%;background:var(--cyan);border-radius:2px;"></div>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;font-size:.55rem;color:rgba(255,255,255,0.4);">
+                    <span>1:02</span><span>2:47</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="hscroll-card">
+          <div class="hscroll-card-body">
+            <div class="hscroll-card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <p class="hscroll-card-num">04 / 04</p>
+            <h3>Budget Champions<br>Programme</h3>
+            <p>We're training 47 Budget Champions — one per county — with the knowledge, tools, and materials to lead public participation forums during the county budget cycle. Civic power, distributed.</p>
+            <div class="feature-tags">
+              <span class="ftag">47 Champions</span>
+              <span class="ftag">Training Workshops</span>
+              <span class="ftag">Participation Kits</span>
+              <span class="ftag">County Advocacy</span>
+            </div>
+          </div>
+          <div class="hscroll-card-visual">
+            <div class="feature-mockup">
+              <div class="fm-bar">
+                <div class="fm-dot" style="background:#ff5f57"></div>
+                <div class="fm-dot" style="background:#febc2e;margin-left:6px"></div>
+                <div class="fm-dot" style="background:#28c840;margin-left:6px"></div>
+              </div>
+              <div class="fm-body">
+                <div style="font-size:.65rem;color:rgba(255,255,255,0.3);margin-bottom:.75rem;letter-spacing:.1em;text-transform:uppercase;">Cohort 2026 · Progress</div>
+                <div style="display:flex;flex-direction:column;gap:.6rem;">
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:.68rem;color:rgba(255,255,255,0.5);margin-bottom:.3rem;"><span>Applications Open</span><span style="color:var(--cyan)">✓ Done</span></div>
+                    <div style="height:3px;background:rgba(255,255,255,0.1);border-radius:2px;"><div style="width:100%;height:100%;background:var(--cyan);border-radius:2px;"></div></div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:.68rem;color:rgba(255,255,255,0.5);margin-bottom:.3rem;"><span>Selection</span><span style="color:var(--cyan)">Q1 2026</span></div>
+                    <div style="height:3px;background:rgba(255,255,255,0.1);border-radius:2px;"><div style="width:60%;height:100%;background:var(--cyan);border-radius:2px;box-shadow:0 0 6px var(--cyan);"></div></div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:.68rem;color:rgba(255,255,255,0.5);margin-bottom:.3rem;"><span>Training Bootcamp</span><span>Q2 2026</span></div>
+                    <div style="height:3px;background:rgba(255,255,255,0.1);border-radius:2px;"><div style="width:10%;height:100%;background:rgba(0,229,255,0.3);border-radius:2px;"></div></div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:.68rem;color:rgba(255,255,255,0.5);margin-bottom:.3rem;"><span>County Deployment</span><span>Q3 2026</span></div>
+                    <div style="height:3px;background:rgba(255,255,255,0.1);border-radius:2px;"></div>
+                  </div>
+                </div>
+                <div style="margin-top:1rem;text-align:center;">
+                  <div style="font-family:serif;font-size:1.8rem;font-weight:900;color:var(--cyan);">47</div>
+                  <div style="font-size:.6rem;color:rgba(255,255,255,0.3);letter-spacing:.1em;text-transform:uppercase;">Champions · 1 per County</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /hscroll-track -->
+    </div><!-- /hscroll-track-wrap -->
+  </div><!-- /hscroll-sticky -->
+</div><!-- /hscroll-section -->
+
+<!-- ─── SPLIT SECTION — APPROACH ─── -->
+<section id="approach" class="split-section">
+  <div class="split-dark">
+    <p class="split-label">03 — What We Track</p>
+    <h2 class="split-title r">National &<br>County Finance</h2>
+    <p class="split-body r d1">From the Treasury building in Nairobi to ward projects in Turkana. Complete, verified coverage of Kenya's entire public finance ecosystem.</p>
+    <ul class="split-list r d2">
+      <li>
+        <div class="sl-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <span>National Budget Policy Statements & Appropriation Bills</span>
+      </li>
+      <li>
+        <div class="sl-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <span>Controller of Budget Quarterly Reports — all 47 counties</span>
+      </li>
+      <li>
+        <div class="sl-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <span>Auditor General Findings & Supplementary Budgets</span>
+      </li>
+      <li>
+        <div class="sl-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <span>County Procurement Plans & Ward Development Funds</span>
+      </li>
+      <li>
+        <div class="sl-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <span>Sector analysis: Health, Education, Infrastructure, Agriculture, Youth</span>
+      </li>
+    </ul>
+  </div>
+  <div class="split-light">
+    <p class="split-label">04 — Our Principles</p>
+    <h2 class="split-title r" style="color:var(--light-ink)">How We<br>Work</h2>
+    <p class="split-body r d1">Three non-negotiables drive everything we publish.</p>
+    <ul class="split-list r d2">
+      <li>
+        <div class="sl-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <span><strong>Verified first.</strong> We never publish unverified budget figures. Every number is cross-referenced against at least two official sources before publication.</span>
+      </li>
+      <li>
+        <div class="sl-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <span><strong>Always free.</strong> Budget transparency is a public good. We will never paywall data, reports, or tools derived from public documents.</span>
+      </li>
+      <li>
+        <div class="sl-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <span><strong>Citizen-first design.</strong> Every product we build is tested with the people who need it most — not the people who already understand fiscal policy.</span>
+      </li>
+      <li>
+        <div class="sl-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <span><strong>Non-partisan always.</strong> Budget data is presented as it is, not as any political narrative would want it to appear. The numbers speak.</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─── AD CAROUSEL ─── -->
+<div class="ad-section">
+  <div class="ad-inner">
+    <p class="ad-tag">Partner &amp; Programme Spotlight</p>
+    <div class="ad-car">
+      <div class="ad-track" id="adTrack">
+        <div class="ad-slide">
+          <div>
+            <h4>📊 Budget Data API — Developer Access</h4>
+            <p>Access clean, structured Kenya public finance data via our developer API. Built for researchers, civic technologists, and data journalists who need verified, machine-readable budget data at scale.</p>
+          </div>
+          <a href="#contact" class="ad-btn">Join API Waitlist <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        </div>
+        <div class="ad-slide">
+          <div>
+            <h4>🎓 University Partnership Programme</h4>
+            <p>Partner with Budget Ndio Story to equip your students in law, economics, public administration, or journalism with access to our tools, raw datasets, and facilitated budget literacy workshops.</p>
+          </div>
+          <a href="#contact" class="ad-btn">Partner With Us <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        </div>
+        <div class="ad-slide">
+          <div>
+            <h4>📣 Budget Champions Cohort 2026 — Applications</h4>
+            <p>We're recruiting 47 Budget Champions — one per county — to lead public participation forums during the 2026/27 budget cycle. Are you passionate about civic accountability? This is your call.</p>
+          </div>
+          <a href="#contact" class="ad-btn">Apply Now <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="ad-dots" id="adDots">
+      <div class="ad-dot on" data-i="0"></div>
+      <div class="ad-dot" data-i="1"></div>
+      <div class="ad-dot" data-i="2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── CTA ─── -->
+<section id="contact" class="cta-wrap">
+  <div class="cta-bg-word">Budget Ndio Story</div>
+  <div class="cta-inner">
+    <div>
+      <h2 class="cta-title r">Be the<br>First<br>to Know.</h2>
+      <p class="cta-sub r d1">We're building in public. Join the early access list for exclusive previews of our data tools, visual reports, and platform features before we launch.</p>
+    </div>
+    <div class="r d2">
+      <form class="cta-form" onsubmit="onSub(event)">
+        <input type="email" class="cta-input" placeholder="Your email address" required id="eml">
+        <button type="submit" class="cta-btn" id="subBtn">
+          Request Early Access
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </form>
+      <p class="cta-note" style="margin-top:.75rem;">No spam. Unsubscribe any time. We respect your privacy.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="foot-inner">
+    <a href="#" class="foot-brand">
+      <div class="foot-brand-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <span class="foot-brand-name">Budget Ndio Story</span>
+    </a>
+    <ul class="foot-links">
+      <li><a href="https://x.com/BudgetNdioStory" target="_blank">Twitter / X</a></li>
+      <li><a href="https://www.instagram.com/budgetndiostory" target="_blank">Instagram</a></li>
+      <li><a href="https://www.youtube.com/@BudgetNdioStory" target="_blank">YouTube</a></li>
+      <li><a href="mailto:hello@budgetndiostory.ke">Email</a></li>
+    </ul>
+    <p class="foot-copy">© 2026 Budget Ndio Story. Kenya Budget Transparency.</p>
+  </div>
+</footer>
+
+<script>
+// ── LOADER ──
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('loader').classList.add('out'), 1600);
+});
+
+// ── CURSOR ──
+const cur = document.getElementById('cur');
+const cur2 = document.getElementById('cur2');
+let mx = 0, my = 0, cx = 0, cy = 0;
+if (window.matchMedia('(pointer:fine)').matches) {
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cur2.style.left = mx + 'px'; cur2.style.top = my + 'px';
+  });
+  (function raf() {
+    cx += (mx - cx) * .11; cy += (my - cy) * .11;
+    cur.style.left = cx + 'px'; cur.style.top = cy + 'px';
+    requestAnimationFrame(raf);
+  })();
+  document.querySelectorAll('a,button').forEach(el => {
+    el.addEventListener('mouseenter', () => { cur.style.transform = 'translate(-50%,-50%) scale(1.9)'; cur.style.opacity = '.4'; });
+    el.addEventListener('mouseleave', () => { cur.style.transform = 'translate(-50%,-50%) scale(1)'; cur.style.opacity = '1'; });
+  });
+} else { cur.style.display = 'none'; cur2.style.display = 'none'; }
+
+// ── SCROLL PROGRESS ──
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  document.getElementById('prog').style.width = pct + '%';
+}, { passive: true });
+
+// ── NAV ──
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 80);
+}, { passive: true });
+
+// ── HAMBURGER ──
+const hbg = document.getElementById('hbg');
+const mob = document.getElementById('mob');
+hbg.addEventListener('click', () => {
+  hbg.classList.toggle('open');
+  mob.classList.toggle('open');
+  document.body.style.overflow = mob.classList.contains('open') ? 'hidden' : '';
+});
+document.querySelectorAll('.mob-l').forEach(l => {
+  l.addEventListener('click', () => {
+    hbg.classList.remove('open'); mob.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+
+// ── SMOOTH SCROLL ──
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+
+// ── REVEAL OBSERVER ──
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('v'); });
+}, { threshold: .1, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.r,.rl,.rr,.rs,.lsep').forEach(el => ro.observe(el));
+
+// ── COUNT UP ──
+const co = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target, t = +el.dataset.t, dur = 1800;
+    const s = performance.now();
+    const tick = now => {
+      const p = Math.min((now - s) / dur, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.floor(ease * t);
+      if (p < 1) requestAnimationFrame(tick); else el.textContent = t;
+    };
+    requestAnimationFrame(tick);
+    co.unobserve(el);
+  });
+}, { threshold: .5 });
+document.querySelectorAll('.count-up').forEach(el => co.observe(el));
+
+// ── STICKY CHAPTERS — Update active nav ──
+const panels = document.querySelectorAll('.chapter-panel');
+const navItems = document.querySelectorAll('.chapter-nav-item');
+
+const chapObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const idx = +e.target.dataset.panel;
+      navItems.forEach((n, i) => n.classList.toggle('active', i === idx));
+      e.target.classList.add('active');
+    } else {
+      e.target.classList.remove('active');
+    }
+  });
+}, { threshold: .4 });
+panels.forEach(p => chapObs.observe(p));
+
+// ── HORIZONTAL SCROLL ──
+const hspacer = document.getElementById('hspacer');
+const hsticky = document.getElementById('hsticky');
+const htrack  = document.getElementById('htrack');
+const hpFill  = document.getElementById('hpFill');
+const hpCount = document.getElementById('hpCount');
+const TOTAL_CARDS = 4;
+let currentCard = 0;
+
+function updateHScroll(cardIndex) {
+  const clamped = Math.max(0, Math.min(TOTAL_CARDS - 1, cardIndex));
+  if (clamped === currentCard && cardIndex !== 0) return;
+  currentCard = clamped;
+  htrack.style.transform = `translateX(-${currentCard * 100}%)`;
+  const pct = (currentCard / (TOTAL_CARDS - 1)) * 100;
+  hpFill.style.width = pct + '%';
+  hpCount.textContent = `0${currentCard + 1} / 0${TOTAL_CARDS}`;
+}
+
+window.addEventListener('scroll', () => {
+  const section = document.getElementById('platform');
+  const rect = section.getBoundingClientRect();
+  const sectionTop = window.scrollY + rect.top;
+  const spacerHeight = hspacer.offsetHeight;
+  const stickyHeight = window.innerHeight - 68;
+
+  // How far into the spacer we are
+  const progress = (window.scrollY - sectionTop) / (spacerHeight - stickyHeight);
+  const cardIndex = Math.floor(progress * TOTAL_CARDS);
+
+  if (window.scrollY >= sectionTop && window.scrollY <= sectionTop + spacerHeight - stickyHeight) {
+    updateHScroll(cardIndex);
+  }
+}, { passive: true });
+
+// ── AD CAROUSEL ──
+let adCur = 0;
+const adTrack = document.getElementById('adTrack');
+const adDots  = document.querySelectorAll('.ad-dot');
+
+function goAd(i) {
+  adCur = (i + 3) % 3;
+  adTrack.style.transform = `translateX(-${adCur * 100}%)`;
+  adDots.forEach((d, j) => d.classList.toggle('on', j === adCur));
+}
+adDots.forEach(d => d.addEventListener('click', () => goAd(+d.dataset.i)));
+setInterval(() => goAd(adCur + 1), 5500);
+
+// ── FORM ──
+function onSub(e) {
+  e.preventDefault();
+  const btn = document.getElementById('subBtn');
+  btn.innerHTML = '✓ You\'re on the list!';
+  btn.style.background = '#003300'; btn.style.color = '#00ff88';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.innerHTML = 'Request Early Access <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+    btn.style.background = ''; btn.style.color = ''; btn.disabled = false;
+    document.getElementById('eml').value = '';
+  }, 4000);
+}
+</script>
+</body>
+</html>

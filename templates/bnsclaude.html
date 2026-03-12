@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Ndio Story — Kenya's Budget Decoded</title>
+    <meta name="description" content="Kenya's budget decoded for the next generation. Follow the money. Find the story.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --blue: #0055FF;
+            --blue-glow: rgba(0, 85, 255, 0.3);
+            --blue-dim: rgba(0, 85, 255, 0.08);
+            --white: #FAFAFA;
+            --black: #050508;
+            --gray: #111116;
+            --border: rgba(255,255,255,0.07);
+            --text-muted: rgba(255,255,255,0.38);
+            --text-secondary: rgba(255,255,255,0.6);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {
+            background: var(--black);
+            color: var(--white);
+            font-family: 'Outfit', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        ::selection { background: var(--blue); color: #fff; }
+
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: var(--black); }
+        ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 2px; }
+
+        /* ─── SCROLL PROGRESS ─── */
+        #scroll-progress {
+            position: fixed;
+            top: 0; left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--blue), #00C6FF);
+            z-index: 1000;
+            transition: width 0.05s linear;
+            box-shadow: 0 0 12px var(--blue-glow);
+        }
+
+        /* ─── GRAIN OVERLAY ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+            opacity: 0.028;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ─── CURSOR ─── */
+        #cursor {
+            position: fixed;
+            width: 40px; height: 40px;
+            border: 1.5px solid rgba(0,85,255,0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), opacity 0.3s;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+        }
+
+        #cursor-dot {
+            position: fixed;
+            width: 6px; height: 6px;
+            background: var(--blue);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px var(--blue);
+        }
+
+        /* ─── NAVIGATION ─── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 500;
+            padding: 0 2rem;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.4s, background 0.4s, backdrop-filter 0.4s;
+        }
+
+        nav.scrolled {
+            border-color: var(--border);
+            background: rgba(5,5,8,0.85);
+            backdrop-filter: blur(24px);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .nav-logo-icon {
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .nav-logo:hover .nav-logo-icon {
+            transform: rotate(-5deg) scale(1.05);
+            box-shadow: 0 0 20px var(--blue-glow);
+        }
+
+        .nav-logo-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 0.08em;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -3px; left: 0; right: 0;
+            height: 1px;
+            background: var(--blue);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+        }
+
+        .nav-links a:hover { color: var(--white); }
+        .nav-links a:hover::after { transform: scaleX(1); }
+
+        .nav-cta {
+            background: var(--blue);
+            color: #fff !important;
+            padding: 0.55rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600 !important;
+            transition: background 0.3s, box-shadow 0.3s, transform 0.2s !important;
+        }
+
+        .nav-cta:hover {
+            background: #0044dd !important;
+            box-shadow: 0 0 24px var(--blue-glow) !important;
+            transform: translateY(-1px);
+        }
+
+        .nav-cta::after { display: none !important; }
+
+        /* HAMBURGER */
+        #hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+            background: none;
+            border: none;
+        }
+
+        #hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--white);
+            transition: transform 0.3s, opacity 0.3s;
+            border-radius: 2px;
+        }
+
+        #hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        #hamburger.open span:nth-child(2) { opacity: 0; }
+        #hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        /* MOBILE MENU */
+        #mobile-menu {
+            position: fixed;
+            inset: 0;
+            background: var(--black);
+            z-index: 490;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2.5rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s;
+        }
+
+        #mobile-menu.open { opacity: 1; pointer-events: all; }
+
+        #mobile-menu a {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.5rem, 10vw, 4rem);
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        #mobile-menu a:hover { color: var(--white); }
+
+        /* ─── AD TICKER ─── */
+        .ad-ticker {
+            background: var(--blue);
+            padding: 0.55rem 0;
+            overflow: hidden;
+            position: relative;
+            cursor: default;
+        }
+
+        .ad-ticker::before, .ad-ticker::after {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 80px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .ad-ticker::before { left: 0; background: linear-gradient(to right, var(--blue), transparent); }
+        .ad-ticker::after { right: 0; background: linear-gradient(to left, var(--blue), transparent); }
+
+        .ad-ticker-inner {
+            display: flex;
+            animation: ticker 35s linear infinite;
+            white-space: nowrap;
+        }
+
+        .ad-ticker:hover .ad-ticker-inner { animation-play-state: paused; }
+
+        .ad-ticker-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 0 3rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .ad-ticker-dot { width: 5px; height: 5px; background: rgba(255,255,255,0.5); border-radius: 50%; flex-shrink: 0; }
+
+        @keyframes ticker {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* ─── HERO ─── */
+        .hero {
+            min-height: 100svh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 8rem 2rem 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+            background-size: 80px 80px;
+            mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 80%);
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: 20%;
+            left: 60%;
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(0,85,255,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse-glow 6s ease-in-out infinite;
+        }
+
+        .hero-glow-2 {
+            position: absolute;
+            top: 60%;
+            left: -10%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(0,198,255,0.06) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse-glow 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.15); opacity: 0.7; }
+        }
+
+        .hero-orb {
+            position: absolute;
+            top: 15%;
+            right: 8%;
+            width: 280px; height: 280px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            animation: spin-slow 30s linear infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-orb::before {
+            content: '';
+            position: absolute;
+            inset: 20px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+        }
+
+        .hero-orb::after {
+            content: '';
+            position: absolute;
+            width: 6px; height: 6px;
+            background: var(--blue);
+            border-radius: 50%;
+            top: -3px; left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 15px var(--blue);
+        }
+
+        .hero-orb-inner {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            color: var(--text-muted);
+            animation: spin-slow 30s linear infinite reverse;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        @keyframes spin-slow { to { transform: rotate(360deg); } }
+
+        .hero-content { position: relative; max-width: 1440px; margin: 0 auto; width: 100%; }
+
+        .hero-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--blue-dim);
+            border: 1px solid rgba(0,85,255,0.25);
+            border-radius: 100px;
+            padding: 0.4rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #6699FF;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.8s 0.2s cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+
+        .hero-label-dot { width: 6px; height: 6px; background: #6699FF; border-radius: 50%; animation: blink 2s infinite; }
+        @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+        .hero-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(5rem, 14vw, 14rem);
+            line-height: 0.92;
+            letter-spacing: 0.01em;
+            opacity: 0;
+            animation: fadeUp 1s 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+
+        .hero-title em {
+            font-style: normal;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+            display: block;
+        }
+
+        .hero-title .accent { color: var(--blue); }
+
+        .hero-sub {
+            max-width: 520px;
+            margin-top: 2.5rem;
+            font-size: clamp(1rem, 2.2vw, 1.25rem);
+            font-weight: 300;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            opacity: 0;
+            animation: fadeUp 1s 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeUp 1s 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--blue);
+            color: #fff;
+            padding: 0.9rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+            border: none;
+            cursor: pointer;
+            letter-spacing: 0.01em;
+        }
+
+        .btn-primary:hover {
+            background: #0044dd;
+            box-shadow: 0 0 40px var(--blue-glow), 0 8px 32px rgba(0,85,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .btn-ghost:hover { color: var(--white); }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 5rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeUp 1s 1s cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+
+        .stat { }
+
+        .stat-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 1;
+            color: var(--white);
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .stat-number sup { font-size: 0.45em; color: var(--blue); }
+        .stat-label { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.4rem; }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── MARQUEE ─── */
+        .marquee-section {
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 0;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, rgba(0,85,255,0.03) 0%, transparent 100%);
+        }
+
+        .marquee-track {
+            display: flex;
+            animation: marquee 25s linear infinite;
+            width: max-content;
+        }
+
+        .marquee-section:hover .marquee-track { animation-play-state: paused; }
+
+        .marquee-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 0 2rem;
+            white-space: nowrap;
+        }
+
+        .marquee-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .marquee-text.blue { color: var(--blue); }
+
+        .marquee-icon { color: var(--blue); flex-shrink: 0; }
+
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* ─── SECTIONS COMMON ─── */
+        section { padding: clamp(4rem, 10vw, 8rem) 2rem; }
+
+        .section-inner { max-width: 1440px; margin: 0 auto; }
+
+        .section-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--blue);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 24px;
+            height: 1px;
+            background: var(--blue);
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 5.5rem);
+            line-height: 1;
+            letter-spacing: 0.02em;
+        }
+
+        /* ─── REVEAL ANIMATIONS ─── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+        }
+
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-left { opacity: 0; transform: translateX(-50px); transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+        .reveal-left.visible { opacity: 1; transform: translateX(0); }
+        .reveal-right { opacity: 0; transform: translateX(50px); transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+        .reveal-right.visible { opacity: 1; transform: translateX(0); }
+        .reveal-scale { opacity: 0; transform: scale(0.9); transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+        .reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+        .delay-4 { transition-delay: 0.45s; }
+        .delay-5 { transition-delay: 0.6s; }
+
+        /* ─── MANIFESTO ─── */
+        .manifesto { background: var(--black); }
+
+        .manifesto-header { display: grid; grid-template-columns: 1fr 2fr; gap: 4rem; align-items: end; margin-bottom: 5rem; }
+
+        .manifesto-statement {
+            font-size: clamp(1.4rem, 3.5vw, 2.5rem);
+            font-weight: 300;
+            line-height: 1.55;
+            color: var(--text-secondary);
+        }
+
+        .manifesto-statement strong { color: var(--white); font-weight: 600; }
+
+        .manifesto-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5px; background: var(--border); border: 1px solid var(--border); }
+
+        .manifesto-card {
+            background: var(--black);
+            padding: 2.5rem;
+            transition: background 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .manifesto-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: var(--blue);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+        }
+
+        .manifesto-card:hover::before { transform: scaleX(1); }
+        .manifesto-card:hover { background: var(--gray); }
+
+        .manifesto-card-icon {
+            width: 48px; height: 48px;
+            background: var(--blue-dim);
+            border: 1px solid rgba(0,85,255,0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--blue);
+        }
+
+        .manifesto-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .manifesto-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+
+        /* ─── BIG QUOTE ─── */
+        .big-quote-section {
+            background: var(--blue);
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .big-quote-inner {
+            padding: clamp(4rem, 10vw, 8rem) 2rem;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .big-quote-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.5rem, 7vw, 7rem);
+            line-height: 1.05;
+            letter-spacing: 0.01em;
+            color: #fff;
+        }
+
+        .big-quote-text .dim { color: rgba(255,255,255,0.3); }
+
+        .big-quote-bg-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(6rem, 20vw, 20rem);
+            line-height: 1;
+            letter-spacing: -0.02em;
+            color: rgba(255,255,255,0.06);
+            overflow: hidden;
+            margin-top: 2rem;
+            white-space: nowrap;
+        }
+
+        /* ─── METHOD ─── */
+        .method { background: #F8F8F8; color: var(--black); }
+
+        .method .section-label { color: var(--blue); }
+        .method .section-label::before { background: var(--blue); }
+        .method .section-title { color: var(--black); }
+
+        .method-list { margin-top: 4rem; }
+
+        .method-item {
+            display: grid;
+            grid-template-columns: 80px 1fr 2fr;
+            gap: 2rem;
+            padding: 3rem 0;
+            border-top: 1px solid rgba(0,0,0,0.08);
+            align-items: start;
+            transition: background 0.3s;
+        }
+
+        .method-item:last-child { border-bottom: 1px solid rgba(0,0,0,0.08); }
+
+        .method-num {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 5rem;
+            line-height: 1;
+            color: rgba(0,0,0,0.08);
+            transition: color 0.3s;
+        }
+
+        .method-item:hover .method-num { color: rgba(0,85,255,0.15); }
+
+        .method-heading h3 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--black); }
+        .method-heading p { font-size: 0.85rem; font-weight: 500; color: rgba(0,0,0,0.4); text-transform: uppercase; letter-spacing: 0.08em; }
+
+        .method-body { font-size: 1rem; color: rgba(0,0,0,0.55); line-height: 1.75; }
+
+        .method-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.2rem; }
+
+        .tag {
+            background: rgba(0,0,0,0.06);
+            color: rgba(0,0,0,0.5);
+            padding: 0.35rem 0.9rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* ─── SCOPE ─── */
+        .scope { background: var(--black); }
+
+        .scope-header { display: grid; grid-template-columns: 1fr 1.5fr; gap: 4rem; align-items: end; margin-bottom: 5rem; }
+
+        .scope-desc { font-size: 1.3rem; font-weight: 300; color: var(--text-secondary); line-height: 1.65; }
+        .scope-desc strong { color: var(--white); font-weight: 600; }
+
+        .scope-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px; background: var(--border); border: 1px solid var(--border); }
+
+        .scope-card {
+            background: var(--black);
+            padding: 3rem 2.5rem;
+            transition: background 0.4s;
+        }
+
+        .scope-card:hover { background: var(--gray); }
+
+        .scope-card-icon {
+            width: 60px; height: 60px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            color: var(--blue);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .scope-card:hover .scope-card-icon {
+            border-color: var(--blue);
+            box-shadow: 0 0 20px var(--blue-glow);
+        }
+
+        .scope-card h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem; }
+
+        .scope-list { list-style: none; display: flex; flex-direction: column; gap: 0.9rem; }
+
+        .scope-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .scope-list li svg { color: var(--blue); flex-shrink: 0; margin-top: 1px; }
+
+        /* ─── AD BANNER ─── */
+        .ad-banner-section {
+            background: var(--gray);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 3rem 2rem;
+        }
+
+        .ad-banner-inner { max-width: 1440px; margin: 0 auto; }
+
+        .ad-banner-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .ad-carousel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .ad-slides { display: flex; transition: transform 0.7s cubic-bezier(0.77,0,0.175,1); }
+
+        .ad-slide {
+            min-width: 100%;
+            padding: 2.5rem 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            background: linear-gradient(135deg, var(--gray) 0%, rgba(0,85,255,0.05) 100%);
+            flex-wrap: wrap;
+        }
+
+        .ad-slide-content h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            letter-spacing: 0.03em;
+            margin-bottom: 0.5rem;
+        }
+
+        .ad-slide-content p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        .ad-slide-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--blue);
+            color: #fff;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        .ad-slide-badge:hover { background: #0044dd; box-shadow: 0 0 20px var(--blue-glow); }
+
+        .ad-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .ad-dot {
+            width: 6px; height: 6px;
+            border-radius: 3px;
+            background: var(--border);
+            cursor: pointer;
+            transition: background 0.3s, width 0.3s;
+        }
+
+        .ad-dot.active { background: var(--blue); width: 24px; }
+
+        /* ─── CTA ─── */
+        .cta-section {
+            background: var(--blue);
+            color: #fff;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cta-bg-text {
+            position: absolute;
+            bottom: -2rem;
+            left: 0; right: 0;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(5rem, 18vw, 16rem);
+            line-height: 1;
+            letter-spacing: -0.01em;
+            color: rgba(255,255,255,0.05);
+            white-space: nowrap;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .cta-inner {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+            padding: clamp(4rem, 10vw, 8rem) 2rem;
+            position: relative;
+        }
+
+        .cta-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3rem, 7vw, 7rem);
+            line-height: 1;
+            letter-spacing: 0.01em;
+        }
+
+        .cta-sub { font-size: 1.1rem; font-weight: 300; margin-top: 1.5rem; opacity: 0.7; line-height: 1.6; }
+
+        .cta-form { display: flex; flex-direction: column; gap: 1rem; }
+
+        .cta-input-group { position: relative; }
+
+        .cta-input {
+            width: 100%;
+            background: rgba(0,0,0,0.2);
+            border: 1.5px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            font-family: 'Outfit', sans-serif;
+            color: #fff;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .cta-input::placeholder { color: rgba(255,255,255,0.4); }
+
+        .cta-input:focus {
+            border-color: rgba(255,255,255,0.6);
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.1);
+        }
+
+        .cta-submit {
+            width: 100%;
+            background: #fff;
+            color: var(--blue);
+            border: none;
+            border-radius: 8px;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .cta-submit:hover { background: rgba(255,255,255,0.9); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+
+        .cta-privacy { font-size: 0.8rem; opacity: 0.5; text-align: center; margin-top: 0.5rem; }
+
+        /* ─── FOOTER ─── */
+        footer {
+            background: var(--black);
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem;
+        }
+
+        .footer-inner {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .footer-logo-icon {
+            width: 32px; height: 32px;
+            background: var(--blue);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-logo span { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.06em; }
+
+        .footer-links { display: flex; gap: 2rem; list-style: none; }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover { color: var(--white); }
+
+        .footer-copy { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 1024px) {
+            .manifesto-header { grid-template-columns: 1fr; gap: 2rem; }
+            .scope-header { grid-template-columns: 1fr; gap: 2rem; }
+            .scope-grid { grid-template-columns: 1fr 1fr; }
+            .method-item { grid-template-columns: 60px 1fr; }
+            .method-body { grid-column: 1 / -1; padding-left: 76px; }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 0 1.25rem; }
+            .nav-links { display: none; }
+            #hamburger { display: flex; }
+
+            section { padding: 4rem 1.25rem; }
+            .hero { padding: 6rem 1.25rem 4rem; }
+
+            .hero-orb { display: none; }
+            .hero-stats { gap: 2rem; }
+
+            .scope-grid { grid-template-columns: 1fr; }
+            .method-item { grid-template-columns: 1fr; gap: 1rem; }
+            .method-body { padding-left: 0; grid-column: auto; }
+            .method-num { font-size: 3rem; }
+
+            .cta-inner { grid-template-columns: 1fr; gap: 3rem; }
+
+            .footer-inner { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+            .footer-links { flex-wrap: wrap; gap: 1rem; }
+
+            .ad-slide { padding: 2rem 1.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title { font-size: clamp(3.5rem, 18vw, 5rem); }
+            .hero-actions { flex-direction: column; align-items: flex-start; }
+            .btn-primary { width: 100%; justify-content: center; }
+            .manifesto-cards { grid-template-columns: 1fr; }
+        }
+
+        /* ─── LOADING SCREEN ─── */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--black);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s 0.3s, visibility 0.6s 0.3s;
+        }
+
+        #loader.done { opacity: 0; visibility: hidden; }
+
+        .loader-inner { text-align: center; }
+
+        .loader-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            letter-spacing: 0.1em;
+            overflow: hidden;
+        }
+
+        .loader-logo span {
+            display: inline-block;
+            transform: translateY(100%);
+            animation: loaderUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+
+        .loader-logo span:nth-child(1) { animation-delay: 0.1s; }
+        .loader-logo span:nth-child(2) { animation-delay: 0.15s; }
+        .loader-logo span:nth-child(3) { animation-delay: 0.2s; }
+
+        @keyframes loaderUp { to { transform: translateY(0); } }
+
+        .loader-bar {
+            width: 200px;
+            height: 2px;
+            background: var(--border);
+            border-radius: 2px;
+            margin: 1.5rem auto 0;
+            overflow: hidden;
+        }
+
+        .loader-bar-fill {
+            height: 100%;
+            background: var(--blue);
+            width: 0%;
+            border-radius: 2px;
+            animation: loadFill 1.2s cubic-bezier(0.16,1,0.3,1) forwards;
+            box-shadow: 0 0 10px var(--blue);
+        }
+
+        @keyframes loadFill { to { width: 100%; } }
+
+        /* Floating data particles */
+        .data-particle {
+            position: absolute;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: rgba(0,85,255,0.2);
+            pointer-events: none;
+            animation: float-particle 20s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes float-particle {
+            0% { transform: translateY(100vh) rotate(-10deg); opacity: 0; }
+            5% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(10deg); opacity: 0; }
+        }
+
+        /* Line separator */
+        .line-sep {
+            width: 100%;
+            height: 1px;
+            background: var(--border);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 1.2s cubic-bezier(0.16,1,0.3,1);
+        }
+
+        .line-sep.visible { transform: scaleX(1); }
+
+        /* Count-up numbers */
+        .count-target { font-variant-numeric: tabular-nums; }
+    </style>
+</head>
+<body>
+
+<!-- Loader -->
+<div id="loader">
+    <div class="loader-inner">
+        <div class="loader-logo">
+            <span>B</span><span>N</span><span>S</span>
+        </div>
+        <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+    </div>
+</div>
+
+<!-- Scroll Progress -->
+<div id="scroll-progress"></div>
+
+<!-- Custom Cursor (desktop only) -->
+<div id="cursor"></div>
+<div id="cursor-dot"></div>
+
+<!-- Navigation -->
+<nav id="navbar">
+    <a href="#" class="nav-logo">
+        <img src="{% static 'logo.svg' %}" alt="BNS Logo" class="nav-logo-icon" style="width: 36px; height: 36px; object-fit: contain;">
+        <span class="nav-logo-text">BNS</span>
+    </a>
+
+    <ul class="nav-links">
+        <li><a href="#manifesto">Manifesto</a></li>
+        <li><a href="#method">Method</a></li>
+        <li><a href="#scope">Scope</a></li>
+        <li><a href="#contact" class="nav-cta">Get Early Access</a></li>
+    </ul>
+
+    <button id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+    </button>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu">
+    <a href="#manifesto" class="mobile-link">Manifesto</a>
+    <a href="#method" class="mobile-link">Method</a>
+    <a href="#scope" class="mobile-link">Scope</a>
+    <a href="#contact" class="mobile-link">Early Access</a>
+</div>
+
+<!-- Ad Ticker (Top) -->
+<div class="ad-ticker" style="margin-top: 72px;">
+    <div class="ad-ticker-inner" id="ticker1">
+        <div class="ad-ticker-item"><div class="ad-ticker-dot"></div>KENYA BUDGET 2025/26 — ANALYSIS COMING SOON</div>
+        <div class="ad-ticker-item"><div class="ad-ticker-dot"></div>47 COUNTIES MAPPED — DATA VERIFIED</div>
+        <div class="ad-ticker-item"><div class="ad-ticker-dot"></div>100% FREE ACCESS — FOREVER</div>
+        <div class="ad-ticker-item"><div class="ad-ticker-dot"></div>FOLLOW THE MONEY · FIND THE STORY</div>
+        <div class="ad-ticker-item"><div class="ad-ticker-dot"></div>LAUNCHING Q2 2026 — JOIN THE WAITLIST</div>
+        <div class="ad-ticker-item"><div class="ad-ticker-dot"></div>BUDGET NDIO STORY · KENYA'S BUDGET DECODED</div>
+        <!-- Duplicate for seamless loop -->
+        <div class="ad-ticker-item"><div class="ad-ticker-dot"></div>KENYA BUDGET 2025/26 — ANALYSIS COMING SOON</div>
+        <div class="ad-ticker-item"><div class="ad-ticker-dot"></div>47 COUNTIES MAPPED — DATA VERIFIED</div>
+        <div class="ad-ticker-item"><div class="ad-ticker-dot"></div>100% FREE ACCESS — FOREVER</div>
+        <div class="ad-ticker-item"><div class="ad-ticker-dot"></div>FOLLOW THE MONEY · FIND THE STORY</div>
+        <div class="ad-ticker-item"><div class="ad-ticker-dot"></div>LAUNCHING Q2 2026 — JOIN THE WAITLIST</div>
+        <div class="ad-ticker-item"><div class="ad-ticker-dot"></div>BUDGET NDIO STORY · KENYA'S BUDGET DECODED</div>
+    </div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="hero-bg">
+        <div class="hero-grid"></div>
+        <div class="hero-glow"></div>
+        <div class="hero-glow-2"></div>
+    </div>
+
+    <!-- Floating particles -->
+    <div class="data-particle" style="left: 5%; animation-delay: 0s; animation-duration: 22s;">KSh 4T BUDGET</div>
+    <div class="data-particle" style="left: 20%; animation-delay: 4s; animation-duration: 18s;">47 COUNTIES</div>
+    <div class="data-particle" style="left: 75%; animation-delay: 8s; animation-duration: 25s;">TRANSPARENCY</div>
+    <div class="data-particle" style="left: 85%; animation-delay: 2s; animation-duration: 20s;">PUBLIC FINANCE</div>
+    <div class="data-particle" style="left: 45%; animation-delay: 12s; animation-duration: 16s;">ACCOUNTABILITY</div>
+
+    <!-- Decorative orb -->
+    <div class="hero-orb">
+        <div class="hero-orb-inner">FOLLOW<br>THE<br>MONEY</div>
+    </div>
+
+    <div class="hero-content">
+        <div class="hero-label">
+            <div class="hero-label-dot"></div>
+            Kenya Budget Transparency · Q2 2026
+        </div>
+
+        <h1 class="hero-title">
+            Budget<br>
+            <em>Ndio</em><br>
+            <span class="accent">Story.</span>
+        </h1>
+
+        <p class="hero-sub">
+            We translate government spending into clarity. No jargon. No gatekeeping. Just the facts young Kenyans need to hold power accountable.
+        </p>
+
+        <div class="hero-actions">
+            <a href="#contact" class="btn-primary">
+                Get Early Access
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a href="#manifesto" class="btn-ghost">
+                Our Manifesto
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+            </a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat">
+                <div class="stat-number"><span class="count-target" data-target="47">0</span><sup>counties</sup></div>
+                <div class="stat-label">Mapped</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number"><span class="count-target" data-target="4">0</span><sup>T KSh</sup></div>
+                <div class="stat-label">Budget Tracked</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number"><span class="count-target" data-target="100">0</span><sup>%</sup></div>
+                <div class="stat-label">Free Access</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number"><span class="count-target" data-target="2026">0</span></div>
+                <div class="stat-label">Launch Year</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Marquee -->
+<div class="marquee-section">
+    <div class="marquee-track">
+        <div class="marquee-item">
+            <span class="marquee-text">FOLLOW THE MONEY</span>
+            <svg class="marquee-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            <span class="marquee-text blue">FIND THE STORY</span>
+            <svg class="marquee-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <span class="marquee-text">KENYA BUDGET DECODED</span>
+            <svg class="marquee-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span class="marquee-text blue">HOLD POWER ACCOUNTABLE</span>
+            <svg class="marquee-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 19-9-9 19-2-8-8-2z"/></svg>
+        </div>
+        <!-- Duplicate -->
+        <div class="marquee-item">
+            <span class="marquee-text">FOLLOW THE MONEY</span>
+            <svg class="marquee-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            <span class="marquee-text blue">FIND THE STORY</span>
+            <svg class="marquee-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <span class="marquee-text">KENYA BUDGET DECODED</span>
+            <svg class="marquee-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span class="marquee-text blue">HOLD POWER ACCOUNTABLE</span>
+            <svg class="marquee-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 19-9-9 19-2-8-8-2z"/></svg>
+        </div>
+    </div>
+</div>
+
+<!-- Manifesto -->
+<section id="manifesto" class="manifesto">
+    <div class="section-inner">
+        <div class="manifesto-header">
+            <div>
+                <p class="section-label reveal">01 — Manifesto</p>
+                <h2 class="section-title reveal delay-1">Why We<br>Exist</h2>
+            </div>
+            <div class="manifesto-statement reveal delay-2">
+                Kenya's national budget exceeds <strong>KSh 4 trillion</strong> annually. County governments control another <strong>KSh 500 billion</strong>. Yet for most young citizens, these numbers remain abstract — trapped in PDFs, buried in jargon, disconnected from daily life.<br><br>
+                That ends here.
+            </div>
+        </div>
+
+        <div class="line-sep reveal"></div>
+
+        <br><br>
+
+        <div class="manifesto-cards">
+            <div class="manifesto-card reveal">
+                <div class="manifesto-card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </div>
+                <h3>The Problem</h3>
+                <p>Budget documents are public by law. But they're written for bureaucrats, not citizens. Dense tables, obscure codes, 300-page PDFs — designed to comply, not to communicate.</p>
+            </div>
+
+            <div class="manifesto-card reveal delay-1">
+                <div class="manifesto-card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
+                <h3>The Stakes</h3>
+                <p>When citizens can't read the budget, they can't ask the right questions. They can't hold their MCA accountable. They can't know if their ward's road project was ever funded.</p>
+            </div>
+
+            <div class="manifesto-card reveal delay-2">
+                <div class="manifesto-card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
+                <h3>Our Answer</h3>
+                <p>We read every budget document so you don't have to. We turn raw data into clarity — visual reports, explainers, and tools built for the next generation of Kenyan citizens.</p>
+            </div>
+
+            <div class="manifesto-card reveal delay-3">
+                <div class="manifesto-card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <h3>For Everyone</h3>
+                <p>Free, forever. Whether you're a student, journalist, activist, or just a curious citizen — this platform is yours. Transparency should never be paywalled.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Big Quote -->
+<div class="big-quote-section">
+    <div class="big-quote-inner">
+        <p class="big-quote-text reveal">
+            <span class="dim">The budget is a</span><br>
+            moral document.<br>
+            <span class="dim">Read it that way.</span>
+        </p>
+        <div class="big-quote-bg-text reveal delay-2">BNS</div>
+    </div>
+</div>
+
+<!-- Method -->
+<section id="method" class="method">
+    <div class="section-inner">
+        <p class="section-label reveal">02 — Method</p>
+        <h2 class="section-title reveal delay-1">How We Do It</h2>
+
+        <div class="method-list">
+            <div class="method-item reveal">
+                <div class="method-num">01</div>
+                <div class="method-heading">
+                    <h3>Investigation</h3>
+                    <p>Data & Research</p>
+                </div>
+                <div class="method-body">
+                    We obtain budget documents directly from Treasury and county portals, cross-referencing with Controller of Budget quarterly reports, auditor findings, and procurement records. Every number is verified against multiple sources before publication.
+                    <div class="method-tags">
+                        <span class="tag">OCDS Data</span>
+                        <span class="tag">IFMIS Records</span>
+                        <span class="tag">CoB Reports</span>
+                        <span class="tag">Audit Findings</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="method-item reveal delay-1">
+                <div class="method-num">02</div>
+                <div class="method-heading">
+                    <h3>Translation</h3>
+                    <p>Storytelling & Design</p>
+                </div>
+                <div class="method-body">
+                    Numbers become narratives. Spreadsheets become visual stories. We produce reports, data visualizations, video explainers, and social content that resonates — turning policy into something personal.
+                    <div class="method-tags">
+                        <span class="tag">Visual Reports</span>
+                        <span class="tag">Video Explainers</span>
+                        <span class="tag">Social Content</span>
+                        <span class="tag">Infographics</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="method-item reveal delay-2">
+                <div class="method-num">03</div>
+                <div class="method-heading">
+                    <h3>Activation</h3>
+                    <p>Civic Engagement</p>
+                </div>
+                <div class="method-body">
+                    Information without action is just trivia. We build tools for public participation — templates for county budget forums, tracker dashboards, and training programs for community budget champions across all 47 counties.
+                    <div class="method-tags">
+                        <span class="tag">Participation Tools</span>
+                        <span class="tag">Budget Champions</span>
+                        <span class="tag">Ward Trackers</span>
+                        <span class="tag">Advocacy Kits</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Scope -->
+<section id="scope" class="scope">
+    <div class="section-inner">
+        <div class="scope-header">
+            <div>
+                <p class="section-label reveal">03 — Scope</p>
+                <h2 class="section-title reveal delay-1">What We<br>Track</h2>
+            </div>
+            <p class="scope-desc reveal delay-2">
+                From the Treasury building in Nairobi to ward projects in Turkana. <strong>Complete coverage</strong> of Kenya's public finance ecosystem — national to hyperlocal.
+            </p>
+        </div>
+
+        <div class="scope-grid">
+            <div class="scope-card reveal">
+                <div class="scope-card-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22V12a10 10 0 1 1 20 0v10"/><path d="M6 22V11"/><path d="M18 22V11"/></svg>
+                </div>
+                <h3>National</h3>
+                <ul class="scope-list">
+                    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Budget Policy Statements</li>
+                    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Appropriation Bills</li>
+                    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Supplementary Budgets</li>
+                    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Controller of Budget Reports</li>
+                    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Auditor General Findings</li>
+                </ul>
+            </div>
+
+            <div class="scope-card reveal delay-2">
+                <div class="scope-card-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                </div>
+                <h3>County</h3>
+                <ul class="scope-list">
+                    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>County Fiscal Strategy Papers</li>
+                    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Finance Bills</li>
+                    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Procurement Plans</li>
+                    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Quarterly Expenditure Reports</li>
+                    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Ward Development Funds</li>
+                </ul>
+            </div>
+
+            <div class="scope-card reveal delay-4">
+                <div class="scope-card-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                </div>
+                <h3>Sector</h3>
+                <ul class="scope-list">
+                    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Healthcare Spending</li>
+                    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Education Budgets</li>
+                    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Infrastructure Projects</li>
+                    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Agriculture & Food Security</li>
+                    <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Youth & Employment Programs</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sponsored Ad Carousel -->
+<div class="ad-banner-section">
+    <div class="ad-banner-inner">
+        <p class="ad-banner-label">Partner Spotlight</p>
+
+        <div class="ad-carousel">
+            <div class="ad-slides" id="adSlides">
+                <div class="ad-slide">
+                    <div class="ad-slide-content">
+                        <h4>📊 Budget Data API — Coming Soon</h4>
+                        <p>Access clean, structured Kenya budget data via our developer API. Ideal for researchers, journalists, and civic tech builders who want verified public finance data.</p>
+                    </div>
+                    <a href="#contact" class="ad-slide-badge">
+                        Join Waitlist
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                </div>
+
+                <div class="ad-slide">
+                    <div class="ad-slide-content">
+                        <h4>🎓 Campus Partnership Program</h4>
+                        <p>Is your university engaged in civic education or public finance research? Partner with BNS to give your students access to our tools, datasets, and training workshops.</p>
+                    </div>
+                    <a href="#contact" class="ad-slide-badge">
+                        Partner With Us
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                </div>
+
+                <div class="ad-slide">
+                    <div class="ad-slide-content">
+                        <h4>📣 Budget Champions Cohort 2026</h4>
+                        <p>We're training 47 budget champions — one per county — to lead public participation forums during the 2026/27 budget cycle. Applications open Q1 2026.</p>
+                    </div>
+                    <a href="#contact" class="ad-slide-badge">
+                        Apply Now
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-dots" id="adDots">
+            <div class="ad-dot active" data-index="0"></div>
+            <div class="ad-dot" data-index="1"></div>
+            <div class="ad-dot" data-index="2"></div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA / Contact -->
+<section id="contact" class="cta-section">
+    <div class="cta-bg-text">BUDGET NDIO STORY</div>
+    <div class="cta-inner">
+        <div>
+            <h2 class="cta-title reveal">Be the<br>First to<br>Know.</h2>
+            <p class="cta-sub reveal delay-1">We're building in public. Join the early access list for exclusive previews of our tools, reports, and platform launch.</p>
+        </div>
+
+        <div class="reveal delay-2">
+            <form class="cta-form" onsubmit="handleSubmit(event)">
+                <div class="cta-input-group">
+                    <input type="email" class="cta-input" placeholder="Your email address" required id="emailInput">
+                </div>
+                <button type="submit" class="cta-submit" id="submitBtn">
+                    Request Early Access
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </button>
+            </form>
+            <p class="cta-privacy">No spam. Unsubscribe anytime. We respect your privacy.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-inner">
+        <a href="#" class="footer-logo">
+            <div class="footer-logo-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22V12a10 10 0 1 1 20 0v10"/><path d="M6 22V11"/><path d="M18 22V11"/></svg>
+            </div>
+            <span>Budget Ndio Story</span>
+        </a>
+
+        <ul class="footer-links">
+            <li><a href="https://x.com/BudgetNdioStory" target="_blank">Twitter / X</a></li>
+            <li><a href="https://www.instagram.com/budgetndiostory" target="_blank">Instagram</a></li>
+            <li><a href="https://www.youtube.com/@BudgetNdioStory" target="_blank">YouTube</a></li>
+            <li><a href="mailto:hello@budgetndiostory.ke">Email</a></li>
+        </ul>
+
+        <p class="footer-copy">© 2026 Budget Ndio Story. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+    // ─── LOADER ───
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.getElementById('loader').classList.add('done');
+        }, 1500);
+    });
+
+    // ─── CURSOR ───
+    const cursor = document.getElementById('cursor');
+    const cursorDot = document.getElementById('cursor-dot');
+    let mouseX = 0, mouseY = 0;
+    let cursorX = 0, cursorY = 0;
+
+    if (window.matchMedia('(pointer: fine)').matches) {
+        document.addEventListener('mousemove', e => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursorDot.style.left = mouseX + 'px';
+            cursorDot.style.top = mouseY + 'px';
+        });
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.12;
+            cursorY += (mouseY - cursorY) * 0.12;
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            requestAnimationFrame(animateCursor);
+        }
+
+        animateCursor();
+
+        document.querySelectorAll('a, button, [data-hover]').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'translate(-50%, -50%) scale(1.8)';
+                cursor.style.opacity = '0.5';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursor.style.opacity = '1';
+            });
+        });
+    } else {
+        cursor.style.display = 'none';
+        cursorDot.style.display = 'none';
+    }
+
+    // ─── SCROLL PROGRESS ───
+    window.addEventListener('scroll', () => {
+        const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+        document.getElementById('scroll-progress').style.width = pct + '%';
+    });
+
+    // ─── NAV SCROLL ───
+    window.addEventListener('scroll', () => {
+        const nav = document.getElementById('navbar');
+        nav.classList.toggle('scrolled', window.scrollY > 80);
+    });
+
+    // ─── HAMBURGER / MOBILE MENU ───
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('open');
+        mobileMenu.classList.toggle('open');
+        document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+    });
+
+    document.querySelectorAll('.mobile-link').forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('open');
+            mobileMenu.classList.remove('open');
+            document.body.style.overflow = '';
+        });
+    });
+
+    // ─── SMOOTH SCROLL ───
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+            const target = document.querySelector(a.getAttribute('href'));
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    // ─── INTERSECTION OBSERVER FOR REVEALS ───
+    const revealObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .line-sep').forEach(el => {
+        revealObserver.observe(el);
+    });
+
+    // ─── COUNT-UP ANIMATION ───
+    const countObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const el = entry.target;
+                const target = parseInt(el.dataset.target);
+                const duration = 1800;
+                const start = performance.now();
+
+                function updateCount(now) {
+                    const elapsed = now - start;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    el.textContent = Math.floor(eased * target);
+                    if (progress < 1) requestAnimationFrame(updateCount);
+                    else el.textContent = target;
+                }
+
+                requestAnimationFrame(updateCount);
+                countObserver.unobserve(el);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.count-target').forEach(el => countObserver.observe(el));
+
+    // ─── AD CAROUSEL ───
+    let currentAd = 0;
+    const adSlides = document.getElementById('adSlides');
+    const adDots = document.querySelectorAll('.ad-dot');
+    const totalAds = adDots.length;
+
+    function goToAd(index) {
+        currentAd = (index + totalAds) % totalAds;
+        adSlides.style.transform = `translateX(-${currentAd * 100}%)`;
+        adDots.forEach((d, i) => d.classList.toggle('active', i === currentAd));
+    }
+
+    adDots.forEach(dot => {
+        dot.addEventListener('click', () => goToAd(parseInt(dot.dataset.index)));
+    });
+
+    // Auto advance
+    setInterval(() => goToAd(currentAd + 1), 5000);
+
+    // ─── FORM SUBMIT ───
+    function handleSubmit(e) {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        const email = document.getElementById('emailInput').value;
+
+        btn.textContent = '✓ You\'re on the list!';
+        btn.style.background = '#00aa55';
+        btn.style.color = '#fff';
+        btn.disabled = true;
+
+        setTimeout(() => {
+            btn.innerHTML = 'Request Early Access <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+            btn.style.background = '';
+            btn.style.color = '';
+            btn.disabled = false;
+            document.getElementById('emailInput').value = '';
+        }, 4000);
+    }
+
+    // ─── PARALLAX ON HERO GLOWS ───
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        const glow = document.querySelector('.hero-glow');
+        const glow2 = document.querySelector('.hero-glow-2');
+        if (glow) glow.style.transform = `translateY(${scrollY * 0.15}px)`;
+        if (glow2) glow2.style.transform = `translateY(${scrollY * 0.08}px)`;
+    }, { passive: true });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Ndio Story — Kenya's Budget, Decoded for Every Citizen</title>
+<meta name="description" content="Budget Ndio Story is Kenya's budget transparency platform. We decode the national budget, all 47 county budgets, and every government spending document — visual, free, and built for every Kenyan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,700;1,9..144,900&family=Epilogue:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1C1007;--cream:#F5EFE0;--cream2:#EDE6D4;--red:#C41C1C;--red2:#A31515;--amber:#E8A020;--white:#FAFAF8;--muted:rgba(28,16,7,.45);--border:rgba(28,16,7,.1);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--ink);font-family:'Epilogue',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+::selection{background:var(--red);color:#fff;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:var(--red);}
+
+/* PROGRESS */
+#prog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--red);z-index:1000;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:900;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;transition:all .4s;}
+nav.s{background:rgba(245,239,224,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);}
+.logo-star{width:34px;height:34px;background:var(--red);display:flex;align-items:center;justify-content:center;}
+.logo-star svg{width:14px;height:14px;color:#fff;}
+.logo-n{font-family:'Fraunces',serif;font-size:1rem;font-weight:900;}
+.nav-r{display:flex;align-items:center;gap:2.5rem;}
+.nav-r a{font-size:.82rem;font-weight:500;color:var(--muted);text-decoration:none;transition:.3s;}
+.nav-r a:hover{color:var(--ink);}
+.nav-r a.cta{background:var(--red);color:#fff!important;padding:.5rem 1.2rem;font-weight:600!important;}
+.nav-r a.cta:hover{background:var(--red2);}
+#ham{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;}
+#ham span{width:22px;height:2px;background:var(--ink);display:block;transition:.3s;border-radius:1px;}
+#ham.o span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+#ham.o span:nth-child(2){opacity:0;}
+#ham.o span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+#mob{position:fixed;inset:0;background:var(--ink);z-index:850;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.5rem;opacity:0;pointer-events:none;transition:.4s;}
+#mob.o{opacity:1;pointer-events:all;}
+#mob a{font-family:'Fraunces',serif;font-size:clamp(2rem,8vw,3.5rem);font-weight:700;font-style:italic;color:rgba(245,239,224,.4);text-decoration:none;transition:.3s;}
+#mob a:hover{color:var(--cream);}
+
+/* TOP TICKER */
+.ticker{background:var(--red);padding:.5rem 0;overflow:hidden;margin-top:68px;}
+.ticker-t{display:flex;animation:tick 35s linear infinite;width:max-content;}
+.ticker:hover .ticker-t{animation-play-state:paused;}
+.ticker-i{padding:0 3rem;font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.8);white-space:nowrap;display:flex;align-items:center;gap:1.5rem;}
+.ticker-sep{color:rgba(255,255,255,.35);}
+@keyframes tick{to{transform:translateX(-50%);}}
+
+/* HERO */
+.hero{min-height:100svh;background:var(--ink);display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(3rem,8vw,7rem) clamp(2rem,5vw,5rem);position:relative;overflow:hidden;}
+.hero-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;}
+.hero-video-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(20,0,0,0.7);z-index:1;}
+.hero-bg{position:absolute;inset:0;}
+.hero-rings{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+.hero-ring{position:absolute;top:50%;left:50%;border-radius:50%;border:1px solid rgba(196,28,28,.15);transform:translate(-50%,-50%);}
+.hero-ring:nth-child(1){width:300px;height:300px;}
+.hero-ring:nth-child(2){width:500px;height:500px;animation:spin 40s linear infinite;}
+.hero-ring:nth-child(3){width:700px;height:700px;animation:spin 60s linear infinite reverse;}
+.hero-ring:nth-child(4){width:1000px;height:1000px;border-style:dashed;}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg);}}
+.hero-dot{position:absolute;top:50%;left:50%;width:10px;height:10px;background:var(--red);border-radius:50%;margin:-5px 0 0 -5px;box-shadow:0 0 20px var(--red),0 0 40px rgba(196,28,28,.3);}
+.hero-c{position:relative;z-index:2;max-width:1400px;margin:0 auto;width:100%;}
+.hero-label{font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(196,28,28,.8);margin-bottom:2.5rem;display:flex;align-items:center;gap:10px;}
+.hero-label::before{content:'';width:24px;height:1px;background:var(--red);}
+.hero-h1{font-family:'Fraunces',serif;font-size:clamp(4rem,14vw,14rem);line-height:.92;font-weight:900;color:var(--cream);}
+.hero-h1 .italic{font-style:italic;color:var(--red);}
+.hero-h1 .ghost{color:transparent;-webkit-text-stroke:1px rgba(245,239,224,.15);}
+.hero-fullname{font-family:'Fraunces',serif;font-size:clamp(1rem,2.5vw,1.8rem);font-weight:300;font-style:italic;color:rgba(245,239,224,.4);margin-top:1rem;letter-spacing:.04em;}
+.hero-bottom{display:grid;grid-template-columns:1fr 1fr;gap:5rem;margin-top:5rem;padding-top:3rem;border-top:1px solid rgba(245,239,224,.08);}
+.hero-desc{font-size:clamp(.88rem,1.5vw,1.1rem);line-height:1.8;color:rgba(245,239,224,.55);font-weight:300;}
+.hero-desc strong{color:rgba(245,239,224,.9);font-weight:500;}
+.hero-right{display:flex;flex-direction:column;justify-content:space-between;gap:2rem;}
+.hero-stats{display:flex;gap:3rem;flex-wrap:wrap;}
+.hs{border-left:2px solid var(--red);padding-left:1.25rem;}
+.hs-n{font-family:'Fraunces',serif;font-size:clamp(2rem,4vw,3.5rem);font-weight:900;color:var(--cream);line-height:1;}
+.hs-n sup{font-size:.4em;color:var(--red);vertical-align:super;}
+.hs-l{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(245,239,224,.35);margin-top:.3rem;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn-red{background:var(--red);color:#fff;padding:.9rem 2rem;font-size:.9rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:.3s;}
+.btn-red:hover{background:var(--red2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(196,28,28,.3);}
+.btn-ghost{border:1px solid rgba(245,239,224,.2);color:rgba(245,239,224,.5);padding:.9rem 2rem;font-size:.9rem;font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:.3s;}
+.btn-ghost:hover{border-color:rgba(245,239,224,.4);color:var(--cream);}
+
+/* HORIZONTAL STICKY SCROLL FOR METHOD */
+.method-outer{position:relative;}
+.method-sticky{position:sticky;top:68px;height:calc(100svh - 68px);overflow:hidden;background:var(--cream2);}
+.method-track{display:flex;height:100%;transition:transform .8s cubic-bezier(.77,0,.175,1);}
+.method-panel{min-width:100%;height:100%;display:flex;align-items:center;padding:clamp(2rem,5vw,5rem);flex-shrink:0;}
+.method-panel-inner{max-width:1400px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
+.mp-left{}
+.mp-num{font-family:'Fraunces',serif;font-size:10rem;font-weight:900;line-height:1;color:rgba(28,16,7,.05);}
+.mp-label{font-size:.7rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--red);margin-bottom:1.25rem;}
+.mp-title{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,4rem);font-weight:900;line-height:1.05;margin-bottom:1.5rem;}
+.mp-body{font-size:clamp(.88rem,1.5vw,1rem);line-height:1.8;color:var(--muted);}
+.mp-body strong{color:var(--ink);font-weight:500;}
+.mp-tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.5rem;}
+.mp-tag{background:var(--ink);color:var(--cream);padding:.35rem .9rem;font-size:.75rem;font-weight:500;}
+.mp-right{background:var(--cream);border:1px solid var(--border);padding:2.5rem;}
+.mp-card-head{font-family:'Fraunces',serif;font-size:1rem;font-weight:700;border-bottom:1px solid var(--border);padding-bottom:.75rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;}
+.mp-card-tag{background:var(--red);color:#fff;font-size:.65rem;font-weight:600;letter-spacing:.08em;padding:.2rem .6rem;}
+.mp-items{display:flex;flex-direction:column;gap:.9rem;}
+.mp-item{display:flex;align-items:flex-start;gap:.75rem;font-size:.88rem;color:var(--muted);line-height:1.5;}
+.mp-item svg{color:var(--red);flex-shrink:0;margin-top:2px;}
+.method-scroll-space{height:300svh;}
+.method-dots{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10;}
+.method-dot{width:8px;height:8px;border-radius:50%;background:rgba(28,16,7,.15);cursor:pointer;transition:.3s;}
+.method-dot.a{background:var(--red);}
+.method-panels-count{position:absolute;top:50%;right:3rem;transform:translateY(-50%);z-index:10;display:flex;flex-direction:column;gap:.5rem;}
+.method-panel-num{font-family:'Fraunces',serif;font-size:.7rem;font-weight:700;color:var(--muted);writing-mode:vertical-rl;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:.3s;}
+.method-panel-num.a{color:var(--red);}
+
+/* MANIFESTO */
+.manifesto{padding:clamp(4rem,10vw,8rem) clamp(2rem,5vw,5rem);background:var(--white);}
+.mani-inner{max-width:1400px;margin:0 auto;}
+.mani-head{display:grid;grid-template-columns:1fr 2fr;gap:4rem;margin-bottom:5rem;align-items:end;}
+.sec-label{font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--red);margin-bottom:1rem;}
+.sec-title{font-family:'Fraunces',serif;font-size:clamp(2.5rem,6vw,5rem);font-weight:900;line-height:1.05;}
+.mani-pull{font-family:'Fraunces',serif;font-size:clamp(1.4rem,3vw,2.5rem);font-style:italic;font-weight:300;line-height:1.5;color:var(--muted);}
+.mani-pull strong{color:var(--ink);font-weight:700;font-style:normal;}
+.mani-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);}
+.mani-card{background:var(--white);padding:3rem 2.5rem;transition:.4s;position:relative;overflow:hidden;}
+.mani-card::after{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--red);transform:scaleY(0);transform-origin:bottom;transition:.5s;}
+.mani-card:hover::after{transform:scaleY(1);}
+.mani-card:hover{background:var(--cream);}
+.mc-num{font-family:'Fraunces',serif;font-size:3rem;font-weight:900;color:rgba(28,16,7,.06);line-height:1;margin-bottom:1.5rem;}
+.mc-title{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;margin-bottom:.75rem;}
+.mc-body{font-size:.9rem;line-height:1.75;color:var(--muted);}
+
+/* SCOPE */
+.scope{padding:clamp(4rem,10vw,8rem) clamp(2rem,5vw,5rem);background:var(--cream);}
+.scope-inner{max-width:1400px;margin:0 auto;}
+.scope-head{display:grid;grid-template-columns:1fr 2fr;gap:4rem;margin-bottom:4rem;align-items:end;}
+.scope-desc{font-size:1.1rem;line-height:1.75;color:var(--muted);}
+.scope-desc strong{color:var(--ink);font-weight:500;}
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--border);}
+.sc-card{padding:2.5rem;border-right:1px solid var(--border);transition:.4s;position:relative;}
+.sc-card:last-child{border-right:none;}
+.sc-card:hover{background:var(--ink);}
+.sc-card:hover .sc-title,.sc-card:hover .sc-li{color:rgba(245,239,224,.7);}
+.sc-card:hover .sc-icon{background:var(--red);color:#fff;}
+.sc-icon{width:44px;height:44px;background:rgba(28,16,7,.07);display:flex;align-items:center;justify-content:center;color:var(--red);margin-bottom:1.5rem;transition:.3s;}
+.sc-title{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;margin-bottom:1.25rem;transition:.3s;}
+.sc-list{list-style:none;display:flex;flex-direction:column;gap:.7rem;}
+.sc-li{font-size:.85rem;color:var(--muted);display:flex;align-items:flex-start;gap:.6rem;line-height:1.4;transition:.3s;}
+.sc-li svg{color:var(--red);flex-shrink:0;margin-top:1px;}
+
+/* QUOTE BREAK */
+.quote{background:var(--red);padding:clamp(4rem,10vw,8rem) clamp(2rem,5vw,5rem);overflow:hidden;position:relative;}
+.quote-inner{max-width:1400px;margin:0 auto;position:relative;z-index:2;}
+.quote-mark{font-family:'Fraunces',serif;font-size:15rem;line-height:1;color:rgba(255,255,255,.08);position:absolute;top:-2rem;left:0;pointer-events:none;user-select:none;}
+.quote-text{font-family:'Fraunces',serif;font-size:clamp(2rem,5.5vw,5.5rem);font-weight:700;font-style:italic;line-height:1.15;color:#fff;max-width:900px;}
+.quote-text em{font-style:normal;color:rgba(255,255,255,.45);}
+.quote-source{margin-top:2.5rem;font-size:.82rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);}
+.quote-bg-text{position:absolute;bottom:-2rem;right:0;font-family:'Fraunces',serif;font-size:clamp(6rem,18vw,18rem);font-weight:900;color:rgba(255,255,255,.03);line-height:1;pointer-events:none;user-select:none;}
+
+/* AD SLIDER */
+.ad-section{background:var(--cream2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:3rem clamp(2rem,5vw,5rem);}
+.ad-section-inner{max-width:1400px;margin:0 auto;}
+.ad-label{font-size:.68rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:2rem;display:flex;align-items:center;gap:8px;}
+.ad-label::before{content:'';width:16px;height:1px;background:var(--muted);}
+.ad-wrap{overflow:hidden;}
+.ad-slides{display:flex;transition:transform .65s cubic-bezier(.77,0,.175,1);}
+.ad-slide{min-width:100%;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;padding-bottom:2rem;border-bottom:1px solid var(--border);}
+.ad-slide-h{font-family:'Fraunces',serif;font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:700;margin-bottom:.5rem;}
+.ad-slide-p{font-size:.88rem;color:var(--muted);max-width:550px;line-height:1.65;}
+.ad-cta{background:var(--ink);color:var(--cream);padding:.75rem 1.75rem;font-size:.82rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;transition:.3s;flex-shrink:0;}
+.ad-cta:hover{background:var(--red);}
+.ad-dots{display:flex;gap:8px;margin-top:1.5rem;}
+.ad-dot{width:8px;height:8px;border-radius:50%;background:rgba(28,16,7,.12);cursor:pointer;transition:.3s;}
+.ad-dot.a{background:var(--red);}
+
+/* CTA */
+.cta{background:var(--ink);padding:clamp(5rem,12vw,10rem) clamp(2rem,5vw,5rem);position:relative;overflow:hidden;}
+.cta-bg-t{position:absolute;bottom:-1rem;left:0;right:0;font-family:'Fraunces',serif;font-size:clamp(5rem,15vw,14rem);font-weight:900;font-style:italic;color:rgba(245,239,224,.02);line-height:1;white-space:nowrap;pointer-events:none;user-select:none;}
+.cta-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;position:relative;z-index:2;}
+.cta-h{font-family:'Fraunces',serif;font-size:clamp(2.5rem,6vw,5.5rem);font-weight:900;font-style:italic;line-height:1.05;color:var(--cream);}
+.cta-h em{font-style:normal;color:var(--red);}
+.cta-sub{font-size:1rem;line-height:1.7;color:rgba(245,239,224,.45);font-weight:300;margin-top:1.5rem;}
+.cta-form{display:flex;flex-direction:column;gap:.75rem;}
+.cta-inp{background:rgba(245,239,224,.06);border:1.5px solid rgba(245,239,224,.12);padding:1rem 1.5rem;font-size:.95rem;font-family:'Epilogue',sans-serif;color:var(--cream);outline:none;transition:.3s;}
+.cta-inp::placeholder{color:rgba(245,239,224,.3);}
+.cta-inp:focus{border-color:var(--red);}
+.cta-btn{background:var(--red);color:#fff;border:none;padding:1rem 2rem;font-size:.95rem;font-weight:600;font-family:'Epilogue',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.3s;}
+.cta-btn:hover{background:var(--red2);transform:translateY(-1px);}
+.cta-note{font-size:.78rem;color:rgba(245,239,224,.25);text-align:center;}
+
+/* FOOTER */
+footer{background:#110B04;border-top:1px solid rgba(245,239,224,.04);padding:2.5rem clamp(2rem,5vw,5rem);}
+.ft-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:2rem;}
+.ft-logo{font-family:'Fraunces',serif;font-size:.95rem;font-weight:700;color:rgba(245,239,224,.4);}
+.ft-links{display:flex;gap:2rem;list-style:none;}
+.ft-links a{font-size:.8rem;color:rgba(245,239,224,.2);text-decoration:none;transition:.3s;}
+.ft-links a:hover{color:var(--cream);}
+.ft-copy{font-size:.75rem;color:rgba(245,239,224,.15);}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(40px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1);}
+.rv.v{opacity:1;transform:none;}
+.d1{transition-delay:.1s;}.d2{transition-delay:.2s;}.d3{transition-delay:.35s;}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .hero-bottom{grid-template-columns:1fr;}
+  .mani-head{grid-template-columns:1fr;}
+  .scope-head{grid-template-columns:1fr;}
+  .scope-grid{grid-template-columns:1fr;}
+  .sc-card{border-right:none;border-bottom:1px solid var(--border);}
+  .sc-card:last-child{border-bottom:none;}
+  .cta-inner{grid-template-columns:1fr;}
+  .method-panel-inner{grid-template-columns:1fr;}
+  .mp-right{display:none;}
+  .mani-cards{grid-template-columns:1fr;}
+  .method-panels-count{display:none;}
+}
+@media(max-width:768px){
+  nav{padding:0 1.25rem;}
+  .nav-r{display:none;}
+  #ham{display:flex;}
+  .hero{padding:5rem 1.25rem 3rem;}
+  .hero-stats{gap:1.5rem;}
+  .method-sticky{overflow:visible;height:auto;position:relative;}
+  .method-scroll-space{display:none;}
+  .method-track{flex-direction:column;transition:none;}
+  .method-panel{min-width:auto;min-height:auto;border-bottom:1px solid var(--border);}
+  .method-dots{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<nav id="nav">
+  <a href="#" class="logo">
+    <div class="logo-star"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+    <span class="logo-n">Budget Ndio Story</span>
+  </a>
+  <div class="nav-r">
+    <a href="#manifesto">Manifesto</a>
+    <a href="#method">Method</a>
+    <a href="#scope">Scope</a>
+    <a href="#contact" class="cta">Early Access</a>
+  </div>
+  <button id="ham"><span></span><span></span><span></span></button>
+</nav>
+
+<div id="mob">
+  <a href="#manifesto" class="ml">Manifesto</a>
+  <a href="#method" class="ml">Method</a>
+  <a href="#scope" class="ml">Scope</a>
+  <a href="#contact" class="ml">Early Access</a>
+</div>
+
+<!-- Ticker -->
+<div class="ticker">
+  <div class="ticker-t">
+    <div class="ticker-i">Budget Ndio Story<span class="ticker-sep"> · </span>Kenya Budget Transparency<span class="ticker-sep"> · </span>47 Counties<span class="ticker-sep"> · </span>KSh 4 Trillion<span class="ticker-sep"> · </span>Free Forever<span class="ticker-sep"> · </span>Launching Q2 2026<span class="ticker-sep"> · </span>Follow the Money · Find the Story<span class="ticker-sep"> · </span></div>
+    <div class="ticker-i">Budget Ndio Story<span class="ticker-sep"> · </span>Kenya Budget Transparency<span class="ticker-sep"> · </span>47 Counties<span class="ticker-sep"> · </span>KSh 4 Trillion<span class="ticker-sep"> · </span>Free Forever<span class="ticker-sep"> · </span>Launching Q2 2026<span class="ticker-sep"> · </span>Follow the Money · Find the Story<span class="ticker-sep"> · </span></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <!-- Video Background -->
+  <video class="hero-video" autoplay muted loop playsinline>
+    <source src="/static/bns001.mp4" type="video/mp4">
+  </video>
+  <div class="hero-video-overlay"></div>
+  
+  <div class="hero-bg">
+    <div class="hero-rings">
+      <div class="hero-ring"></div><div class="hero-ring"></div><div class="hero-ring"></div><div class="hero-ring"></div>
+    </div>
+    <div class="hero-dot"></div>
+  </div>
+  <div class="hero-c">
+    <p class="hero-label">Kenya National &amp; County Budget Transparency Platform</p>
+    <h1 class="hero-h1">
+      Budget<br>
+      <span class="italic">Ndio</span><br>
+      <span class="ghost">Story</span>
+    </h1>
+    <p class="hero-fullname">Budget Ndio Story — Kenya's Budget, Decoded for Every Citizen</p>
+    <div class="hero-bottom">
+      <div class="hero-desc">
+        <p>Every year, Kenya's government spends over <strong>KSh 4 trillion</strong> across hundreds of programmes. All <strong>47 counties</strong> control additional billions in devolved funds. But government budget documents are written for bureaucrats, not citizens. <strong>Budget Ndio Story</strong> changes that — translating Kenya's entire public finance system into clear, visual, accessible information. Free to every Kenyan. Forever.</p>
+        <div style="margin-top:2rem;">
+          <div class="hero-btns">
+            <a href="#contact" class="btn-red">Get Early Access <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+            <a href="#manifesto" class="btn-ghost">Read Manifesto</a>
+          </div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-stats">
+          <div class="hs"><div class="hs-n"><span class="ct" data-t="47">0</span></div><div class="hs-l">Counties</div></div>
+          <div class="hs"><div class="hs-n">4<sup>T KSh</sup></div><div class="hs-l">Tracked</div></div>
+          <div class="hs"><div class="hs-n"><span class="ct" data-t="100">0</span><sup>%</sup></div><div class="hs-l">Free</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section id="manifesto" class="manifesto">
+  <div class="mani-inner">
+    <div class="mani-head">
+      <div>
+        <p class="sec-label rv">01 — Manifesto</p>
+        <h2 class="sec-title rv d1">Why We<br>Exist</h2>
+      </div>
+      <p class="mani-pull rv d2">Kenya's budget is technically public. But technical and <strong>accessible</strong> are not the same thing. We close that gap — permanently, and for free.</p>
+    </div>
+    <div class="mani-cards">
+      <div class="mani-card rv"><div class="mc-num">01</div><div class="mc-title">The Transparency Gap</div><div class="mc-body">Kenya's national budget exceeds KSh 4 trillion and is published by law. County governments publish theirs too. But these documents are written to comply with regulations — not to communicate with citizens. Dense tables, technical jargon, and 300-page PDFs create a wall between Kenyans and the decisions that shape their lives. Budget Ndio Story tears down that wall.</div></div>
+      <div class="mani-card rv d1"><div class="mc-num">02</div><div class="mc-title">The Democratic Cost</div><div class="mc-body">When citizens cannot read the budget, they cannot hold power accountable. They cannot verify whether the hospital in their ward was actually funded. They cannot attend a county budget forum with the right questions. Budget literacy is the missing foundation of Kenya's democracy — and right now it belongs to too few people.</div></div>
+      <div class="mani-card rv d2"><div class="mc-num">03</div><div class="mc-title">Our Response</div><div class="mc-body">Budget Ndio Story is a public good, not a product. We read every budget document — national, county, sector — so you don't have to. Then we translate the findings into visual reports, explainers, and tools built for the next generation of Kenyan citizens. Every piece of content we produce is free to access, forever.</div></div>
+      <div class="mani-card rv d3"><div class="mc-num">04</div><div class="mc-title">For Every Kenyan</div><div class="mc-body">Whether you're a student in Kisii, a journalist in Nairobi, an activist in Mombasa, or a ward rep in Garissa — this platform is built for you. Kenya's budget story belongs to every citizen who pays taxes, uses a public school, or visits a government hospital. That's all 55 million of us.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<div class="quote rv">
+  <div class="quote-inner">
+    <div class="quote-mark">"</div>
+    <p class="quote-text"><em>The budget is a</em> moral document. <em>If you want to know what your government values —</em> read its balance sheet.</p>
+    <p class="quote-source">— Budget Ndio Story Manifesto, 2026</p>
+  </div>
+  <div class="quote-bg-text">BNS</div>
+</div>
+
+<!-- METHOD — HORIZONTAL STICKY SCROLL -->
+<div id="method" class="method-outer">
+  <div class="method-sticky">
+    <div class="method-track" id="methodTrack">
+      <div class="method-panel">
+        <div class="method-panel-inner">
+          <div class="mp-left">
+            <div class="mp-num">01</div>
+            <div class="mp-label">02 — Method · Step One</div>
+            <h3 class="mp-title">Investigation: We Read Everything</h3>
+            <p class="mp-body">Every budget document published by the National Treasury, Controller of Budget, Auditor General, and all <strong>47 county governments</strong> is obtained, catalogued, and cross-referenced. Our team verifies every figure against at least two independent sources before publication. No unverified number ever reaches our platform.</p>
+            <div class="mp-tags"><span class="mp-tag">OCDS Data</span><span class="mp-tag">IFMIS Records</span><span class="mp-tag">Audit Trails</span><span class="mp-tag">CoB Reports</span></div>
+          </div>
+          <div class="mp-right">
+            <div class="mp-card-head">Data Sources <span class="mp-card-tag">VERIFIED</span></div>
+            <div class="mp-items">
+              <div class="mp-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>National Treasury IFMIS portal</div>
+              <div class="mp-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Controller of Budget quarterly reports</div>
+              <div class="mp-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Auditor General annual reports</div>
+              <div class="mp-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>47 county government portals</div>
+              <div class="mp-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Open Contracting Data Standard records</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="method-panel">
+        <div class="method-panel-inner">
+          <div class="mp-left">
+            <div class="mp-num">02</div>
+            <div class="mp-label">02 — Method · Step Two</div>
+            <h3 class="mp-title">Translation: Numbers Become Narratives</h3>
+            <p class="mp-body">Raw data is meaningless without context. We pair every figure with the story behind it — who decided it, what changed year-on-year, and what it means in practice for citizens. We produce <strong>visual reports, interactive charts, short-form videos, and social content</strong> designed to reach Kenyans where they are: on phones, in classrooms, in communities.</p>
+            <div class="mp-tags"><span class="mp-tag">Visual Reports</span><span class="mp-tag">Video Explainers</span><span class="mp-tag">Social Media</span><span class="mp-tag">Infographics</span></div>
+          </div>
+          <div class="mp-right">
+            <div class="mp-card-head">Output Formats <span class="mp-card-tag">MULTI-PLATFORM</span></div>
+            <div class="mp-items">
+              <div class="mp-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Visual budget summary reports (PDF &amp; web)</div>
+              <div class="mp-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Short-form video explainers (YouTube &amp; social)</div>
+              <div class="mp-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Interactive county budget dashboards</div>
+              <div class="mp-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Data visualisations &amp; infographics</div>
+              <div class="mp-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>WhatsApp-ready summary cards</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="method-panel">
+        <div class="method-panel-inner">
+          <div class="mp-left">
+            <div class="mp-num">03</div>
+            <div class="mp-label">02 — Method · Step Three</div>
+            <h3 class="mp-title">Activation: Information That Creates Action</h3>
+            <p class="mp-body">Transparency without participation is incomplete. We build the civic infrastructure to put knowledge to work — templates for public participation forums, ward-level spending trackers, and a <strong>Budget Champions programme</strong>: one trained community advocate per county, across all 47 counties in Kenya.</p>
+            <div class="mp-tags"><span class="mp-tag">Budget Champions</span><span class="mp-tag">Ward Trackers</span><span class="mp-tag">Forum Toolkits</span><span class="mp-tag">Training</span></div>
+          </div>
+          <div class="mp-right">
+            <div class="mp-card-head">Civic Tools <span class="mp-card-tag">COMING Q2 2026</span></div>
+            <div class="mp-items">
+              <div class="mp-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Public participation forum templates</div>
+              <div class="mp-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Ward development fund tracker dashboards</div>
+              <div class="mp-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Budget Champion training programme (47 counties)</div>
+              <div class="mp-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>MCA accountability question banks</div>
+              <div class="mp-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Freedom of information request templates</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="method-dots" id="mDots">
+      <div class="method-dot a" data-i="0"></div>
+      <div class="method-dot" data-i="1"></div>
+      <div class="method-dot" data-i="2"></div>
+    </div>
+    <div class="method-panels-count" id="mNums">
+      <div class="method-panel-num a" data-i="0">STEP 01</div>
+      <div class="method-panel-num" data-i="1">STEP 02</div>
+      <div class="method-panel-num" data-i="2">STEP 03</div>
+    </div>
+  </div>
+  <div class="method-scroll-space" id="mSpace"></div>
+</div>
+
+<!-- AD -->
+<div class="ad-section rv">
+  <div class="ad-section-inner">
+    <p class="ad-label">Partner Spotlight</p>
+    <div class="ad-wrap">
+      <div class="ad-slides" id="adS">
+        <div class="ad-slide">
+          <div><h4 class="ad-slide-h">Budget Champions Programme 2026 — Applications Open</h4><p class="ad-slide-p">One trained Budget Champion per county. 47 civic advocates leading public participation forums during Kenya's 2026/27 budget cycle. Fully funded, no cost to applicants.</p></div>
+          <a href="#contact" class="ad-cta">Apply Now <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        </div>
+        <div class="ad-slide">
+          <div><h4 class="ad-slide-h">Budget Data API — Join the Developer Waitlist</h4><p class="ad-slide-p">Clean, structured Kenya budget data via REST API. Built for civic tech developers, journalists, and researchers. Verified against primary government sources.</p></div>
+          <a href="#contact" class="ad-cta">Join Waitlist <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        </div>
+        <div class="ad-slide">
+          <div><h4 class="ad-slide-h">University & Campus Partnership Programme</h4><p class="ad-slide-p">Bring BNS tools, datasets, and workshops to your institution. We partner with law, economics, political science, and journalism departments across Kenya.</p></div>
+          <a href="#contact" class="ad-cta">Partner With Us <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="ad-dots" id="adD">
+      <div class="ad-dot a" data-i="0"></div>
+      <div class="ad-dot" data-i="1"></div>
+      <div class="ad-dot" data-i="2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SCOPE -->
+<section id="scope" class="scope">
+  <div class="scope-inner">
+    <div class="scope-head">
+      <div><p class="sec-label rv">03 — Scope</p><h2 class="sec-title rv d1">What We<br>Track</h2></div>
+      <p class="scope-desc rv d2">From the National Treasury to ward development funds in every corner of Kenya. <strong>Complete, verified coverage</strong> of Kenya's public finance ecosystem — national, county, and sector level.</p>
+    </div>
+    <div class="scope-grid">
+      <div class="sc-card rv"><div class="sc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 22V12a10 10 0 1 1 20 0v10"/></svg></div><div class="sc-title">National Government</div><ul class="sc-list"><li class="sc-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Budget Policy Statements</li><li class="sc-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Appropriation Bills &amp; Supplementaries</li><li class="sc-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Controller of Budget Reports</li><li class="sc-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Auditor General Findings</li><li class="sc-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Consolidated Fund Services</li></ul></div>
+      <div class="sc-card rv d2"><div class="sc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18"/><path d="M3 9h18M9 21V9"/></svg></div><div class="sc-title">County Governments</div><ul class="sc-list"><li class="sc-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Fiscal Strategy Papers</li><li class="sc-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>County Finance Bills &amp; Budgets</li><li class="sc-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Quarterly Expenditure Reports</li><li class="sc-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Ward Development Fund Allocations</li><li class="sc-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Procurement Plans &amp; Contracts</li></ul></div>
+      <div class="sc-card rv d3"><div class="sc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21.21 15.89A10 10 0 1 1 8 2.83M22 12A10 10 0 0 0 12 2v10z"/></svg></div><div class="sc-title">Sector Analysis</div><ul class="sc-list"><li class="sc-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Healthcare &amp; Social Protection</li><li class="sc-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Education &amp; Capitation Grants</li><li class="sc-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Infrastructure &amp; Roads</li><li class="sc-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Agriculture &amp; Food Security</li><li class="sc-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Youth &amp; Employment Programmes</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contact" class="cta">
+  <div class="cta-bg-t">Budget Ndio Story</div>
+  <div class="cta-inner">
+    <div class="rv"><h2 class="cta-h">Be the First<br>to <em>Know.</em></h2><p class="cta-sub">Join the Budget Ndio Story early access list. Exclusive previews, beta tools, and our first analysis reports before the public launch.</p></div>
+    <div class="rv d2">
+      <form class="cta-form" onsubmit="sub(event)">
+        <input type="email" class="cta-inp" placeholder="Your email address" required id="ei">
+        <button type="submit" class="cta-btn" id="sb">Request Early Access <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+      </form>
+      <p class="cta-note" style="margin-top:.75rem;">No spam. Unsubscribe anytime.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="ft-inner">
+    <div class="ft-logo">Budget Ndio Story</div>
+    <ul class="ft-links">
+      <li><a href="https://x.com/BudgetNdioStory" target="_blank">Twitter</a></li>
+      <li><a href="https://www.instagram.com/budgetndiostory" target="_blank">Instagram</a></li>
+      <li><a href="https://www.youtube.com/@BudgetNdioStory" target="_blank">YouTube</a></li>
+      <li><a href="mailto:hello@budgetndiostory.ke">Email</a></li>
+    </ul>
+    <p class="ft-copy">© 2026 Budget Ndio Story</p>
+  </div>
+</footer>
+
+<script>
+window.addEventListener('scroll',()=>{
+  document.getElementById('prog').style.width=(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%';
+  document.getElementById('nav').classList.toggle('s',window.scrollY>60);
+},{passive:true});
+const ham=document.getElementById('ham'),mob=document.getElementById('mob');
+ham.addEventListener('click',()=>{ham.classList.toggle('o');mob.classList.toggle('o');document.body.style.overflow=mob.classList.contains('o')?'hidden':'';});
+document.querySelectorAll('.ml').forEach(l=>l.addEventListener('click',()=>{ham.classList.remove('o');mob.classList.remove('o');document.body.style.overflow='';}));
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'});}}));
+
+const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v');}),{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+
+const co=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const el=e.target,t=+el.dataset.t,d=1600,s=performance.now();const u=n=>{const p=Math.min((n-s)/d,1),ea=1-Math.pow(1-p,3);el.textContent=Math.floor(ea*t);if(p<1)requestAnimationFrame(u);else el.textContent=t;};requestAnimationFrame(u);co.unobserve(el);}}),{threshold:.5});
+document.querySelectorAll('.ct').forEach(el=>co.observe(el));
+
+// HORIZONTAL METHOD STICKY SCROLL
+const outer=document.getElementById('method'),sticky=outer.querySelector('.method-sticky'),track=document.getElementById('methodTrack'),space=document.getElementById('mSpace'),dots=document.querySelectorAll('.method-dot'),nums=document.querySelectorAll('.method-panel-num');
+let cur=0,total=3;
+function goMethod(i){cur=Math.max(0,Math.min(total-1,i));track.style.transform=`translateX(-${cur*100}%)`;dots.forEach((d,j)=>d.classList.toggle('a',j===cur));nums.forEach((n,j)=>n.classList.toggle('a',j===cur));}
+dots.forEach(d=>d.addEventListener('click',()=>goMethod(+d.dataset.i)));
+nums.forEach(n=>n.addEventListener('click',()=>goMethod(+n.dataset.i)));
+
+// scroll-driven horizontal
+const isMobile=window.innerWidth<768;
+if(!isMobile){
+  window.addEventListener('scroll',()=>{
+    const rect=outer.getBoundingClientRect(),scrollH=outer.offsetHeight-window.innerHeight,scrollPos=-rect.top;
+    if(scrollPos>=0&&scrollPos<=scrollH){
+      const progress=scrollPos/scrollH;
+      const newCur=Math.floor(progress*(total-.001));
+      if(newCur!==cur)goMethod(newCur);
+    }
+  },{passive:true});
+}
+
+// ad carousel
+let acur=0;const aSlides=document.getElementById('adS'),aDots=document.querySelectorAll('.ad-dot'),aTotal=aDots.length;
+function goAd(i){acur=(i+aTotal)%aTotal;aSlides.style.transform=`translateX(-${acur*100}%)`;aDots.forEach((d,j)=>d.classList.toggle('a',j===acur));}
+aDots.forEach(d=>d.addEventListener('click',()=>goAd(+d.dataset.i)));
+setInterval(()=>goAd(acur+1),5500);
+
+function sub(e){e.preventDefault();const b=document.getElementById('sb');b.textContent='✓ On the list!';b.style.background='#2D7A4F';b.disabled=true;setTimeout(()=>{b.innerHTML='Request Early Access <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';b.style.background='';b.disabled=false;document.getElementById('ei').value='';},4000);}
+</script>
+</body>
+</html>

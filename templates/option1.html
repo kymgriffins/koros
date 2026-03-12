@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Ndio Story — Kenya's Budget Decoded for the Next Generation</title>
+<meta name="description" content="Budget Ndio Story translates Kenya's national and county government spending into clear, visual, and accessible information for every Kenyan citizen. Follow the money. Find the story.">
+<meta name="keywords" content="Kenya budget, Kenya public finance, county budgets, budget transparency, Kenya fiscal policy, public spending Kenya">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0A1628;--navy2:#0F1F3D;--gold:#C9A84C;--gold2:#F0C96A;--cream:#FAF7F0;--text:#1A2740;--muted:#6B7A94;--border:rgba(10,22,40,0.1);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--text);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+::selection{background:var(--gold);color:#fff;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:var(--gold);}
+
+/* ── PROGRESS ── */
+#prog{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2));z-index:1000;transition:width .05s;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:900;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;border-bottom:1px solid transparent;transition:all .4s;}
+nav.s{background:rgba(250,247,240,.95);backdrop-filter:blur(20px);border-color:var(--border);}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--navy);}
+.logo-mark{width:34px;height:34px;background:var(--navy);display:flex;align-items:center;justify-content:center;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);}
+.logo-mark svg{width:14px;height:14px;}
+.logo-name{font-family:'Neue Montreal',serif;font-size:1rem;font-weight:700;letter-spacing:.02em;}
+.nav-r{display:flex;align-items:center;gap:2.5rem;}
+.nav-r a{font-size:.83rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color .3s;}
+.nav-r a:hover{color:var(--navy);}
+.nav-cta{background:var(--navy)!important;color:var(--cream)!important;padding:.5rem 1.2rem;font-weight:600!important;}
+#ham{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;}
+#ham span{width:22px;height:2px;background:var(--navy);display:block;transition:.3s;border-radius:2px;}
+#ham.o span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+#ham.o span:nth-child(2){opacity:0;}
+#ham.o span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+#mob{position:fixed;inset:0;background:var(--navy);z-index:850;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.5rem;opacity:0;pointer-events:none;transition:.4s;}
+#mob.o{opacity:1;pointer-events:all;}
+#mob a{font-family:'Neue Montreal',serif;font-size:clamp(2rem,8vw,3.5rem);font-style:italic;color:rgba(250,247,240,.5);text-decoration:none;transition:.3s;}
+#mob a:hover{color:var(--cream);}
+
+/* ── TICKER ── */
+.ticker{background:var(--navy);padding:.55rem 0;overflow:hidden;margin-top:68px;}
+.ticker-t{display:flex;animation:tick 40s linear infinite;width:max-content;}
+.ticker:hover .ticker-t{animation-play-state:paused;}
+.ticker-i{padding:0 3rem;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(250,247,240,.5);white-space:nowrap;display:flex;align-items:center;gap:1.5rem;}
+.ticker-i span{color:var(--gold);}
+@keyframes tick{to{transform:translateX(-50%);}}
+
+/* ── HERO ── */
+.hero{min-height:100svh;background:var(--navy);display:grid;grid-template-columns:1fr 1fr;position:relative;overflow:hidden;}
+.hero-l{padding:clamp(4rem,10vw,8rem) clamp(2rem,5vw,5rem);display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2;}
+.hero-r{position:relative;overflow:hidden;background:var(--navy2);}
+.hero-r-bg{position:absolute;inset:0;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(12,1fr);gap:1px;opacity:.06;}
+.hero-r-bg div{background:var(--gold);}
+.hero-r-content{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2rem;padding:3rem;}
+
+/* Video Background Styles */
+.hero-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;}
+.hero-video-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(10,22,40,0.7);z-index:1;}
+.hero-eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:2rem;display:flex;align-items:center;gap:10px;}
+.hero-eyebrow::before{content:'';width:30px;height:1px;background:var(--gold);}
+.hero-title-wrap{overflow:hidden;}
+.hero-title{font-family:'Neue Montreal',serif;font-size:clamp(2rem,6vw,5.5rem);line-height:1.05;font-weight:900;color:var(--cream);}
+.hero-title em{font-style:italic;color:var(--gold);}
+.hero-title .full{display:block;font-size:clamp(1.2rem,3vw,2.5rem);font-weight:700;color:rgba(250,247,240,.4);letter-spacing:.04em;margin-top:.5rem;}
+.hero-seo{margin:2rem 0;max-width:480px;}
+.hero-seo p{font-size:clamp(.9rem,1.5vw,1.1rem);font-weight:300;line-height:1.75;color:rgba(250,247,240,.6);}
+.hero-seo p strong{color:rgba(250,247,240,.9);font-weight:500;}
+.hero-divider{width:40px;height:2px;background:var(--gold);margin:1.5rem 0;}
+.hero-meta{display:flex;gap:3rem;margin-top:2rem;}
+.hero-meta-item{}
+.hero-meta-num{font-family:'Neue Montreal',serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:900;color:var(--cream);}
+.hero-meta-num sup{font-size:.4em;color:var(--gold);vertical-align:super;}
+.hero-meta-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(250,247,240,.4);margin-top:.25rem;}
+.hero-btns{display:flex;gap:1rem;margin-top:2.5rem;flex-wrap:wrap;}
+.btn-gold{background:var(--gold);color:var(--navy);padding:.85rem 2rem;font-size:.9rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:.3s;}
+.btn-gold:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,.3);}
+.btn-outline{border:1.5px solid rgba(250,247,240,.2);color:rgba(250,247,240,.6);padding:.85rem 2rem;font-size:.9rem;font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:.3s;}
+.btn-outline:hover{border-color:rgba(250,247,240,.5);color:var(--cream);}
+
+/* newspaper visual on right */
+.paper{background:rgba(250,247,240,.04);border:1px solid rgba(250,247,240,.08);padding:2rem;width:90%;max-width:380px;}
+.paper-head{font-family:'Neue Montreal',serif;font-size:1.5rem;font-weight:700;color:rgba(250,247,240,.9);border-bottom:3px double rgba(201,168,76,.4);padding-bottom:.75rem;margin-bottom:.75rem;}
+.paper-sub{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
+.paper-cols{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.paper-col p{font-size:.78rem;line-height:1.6;color:rgba(250,247,240,.4);}
+.paper-col p:first-child{font-weight:600;color:rgba(250,247,240,.6);margin-bottom:.25rem;}
+.paper-stat{display:flex;align-items:baseline;gap:.5rem;margin-top:1.5rem;border-top:1px solid rgba(250,247,240,.06);padding-top:1rem;}
+.paper-stat-n{font-family:'Neue Montreal',serif;font-size:2.5rem;font-weight:900;color:var(--gold);}
+.paper-stat-l{font-size:.72rem;color:rgba(250,247,240,.4);text-transform:uppercase;letter-spacing:.1em;}
+
+/* ── STICKY SPLIT ── */
+.sticky-section{display:grid;grid-template-columns:38% 62%;}
+.sticky-l{position:sticky;top:68px;height:calc(100svh - 68px);display:flex;flex-direction:column;justify-content:center;padding:clamp(2rem,5vw,5rem);background:var(--navy);color:var(--cream);}
+.sticky-l-num{font-family:'Neue Montreal',serif;font-size:8rem;font-weight:900;line-height:1;color:rgba(250,247,240,.05);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+.sticky-l-label{font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;}
+.sticky-l-title{font-family:'Neue Montreal',serif;font-size:clamp(2rem,4vw,3.5rem);font-weight:900;line-height:1.1;margin-bottom:1.5rem;}
+.sticky-l-desc{font-size:.95rem;line-height:1.75;color:rgba(250,247,240,.5);font-weight:300;}
+.sticky-r{background:var(--cream);}
+
+/* scroll cards */
+.scroll-cards{padding:clamp(2rem,5vw,5rem);}
+.scard{padding:3rem 0;border-bottom:1px solid var(--border);opacity:.4;transform:translateX(20px);transition:opacity .6s,transform .6s;}
+.scard.a{opacity:1;transform:translateX(0);}
+.scard-num{font-family:'Neue Montreal',serif;font-size:.8rem;color:var(--gold);font-weight:700;margin-bottom:1rem;}
+.scard h3{font-family:'Neue Montreal',serif;font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:700;margin-bottom:1rem;color:var(--navy);}
+.scard p{font-size:.95rem;line-height:1.75;color:var(--muted);}
+.scard-tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.5rem;}
+.scard-tag{background:var(--navy);color:var(--cream);padding:.3rem .9rem;font-size:.75rem;font-weight:500;letter-spacing:.04em;}
+
+/* ── QUOTE BREAK ── */
+.quote-section{background:var(--gold);padding:clamp(4rem,10vw,8rem) clamp(2rem,5vw,5rem);overflow:hidden;position:relative;}
+.quote-text{font-family:'Neue Montreal',serif;font-size:clamp(1.8rem,5vw,5rem);font-weight:700;font-style:italic;line-height:1.2;color:var(--navy);max-width:900px;position:relative;z-index:2;}
+.quote-bg{position:absolute;bottom:-1rem;right:0;font-family:'Neue Montreal',serif;font-size:clamp(8rem,20vw,18rem);font-weight:900;color:rgba(10,22,40,.07);line-height:1;user-select:none;pointer-events:none;}
+.quote-attr{margin-top:2rem;font-size:.85rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(10,22,40,.5);}
+
+/* ── SCOPE ── */
+.scope{padding:clamp(4rem,8vw,7rem) clamp(2rem,5vw,5rem);}
+.scope-inner{max-width:1400px;margin:0 auto;}
+.scope-head{display:grid;grid-template-columns:1fr 2fr;gap:4rem;margin-bottom:4rem;align-items:end;}
+.sec-label{font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
+.sec-title{font-family:'Neue Montreal',serif;font-size:clamp(2rem,5vw,4rem);font-weight:900;line-height:1.1;color:var(--navy);}
+.scope-intro{font-size:1.2rem;font-weight:300;line-height:1.7;color:var(--muted);}
+.scope-intro strong{color:var(--text);font-weight:500;}
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--border);}
+.scope-item{padding:2.5rem;border-right:1px solid var(--border);transition:.3s;}
+.scope-item:last-child{border-right:none;}
+.scope-item:hover{background:var(--navy);}
+.scope-item:hover .si-title{color:var(--cream);}
+.scope-item:hover .si-icon{background:var(--gold);color:var(--navy);}
+.scope-item:hover .si-li{color:rgba(250,247,240,.5);}
+.si-icon{width:44px;height:44px;background:rgba(10,22,40,.08);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;color:var(--navy);transition:.3s;}
+.si-title{font-family:'Neue Montreal',serif;font-size:1.3rem;font-weight:700;margin-bottom:1.25rem;transition:.3s;}
+.si-list{list-style:none;display:flex;flex-direction:column;gap:.75rem;}
+.si-li{font-size:.85rem;color:var(--muted);display:flex;align-items:flex-start;gap:.6rem;line-height:1.4;transition:.3s;}
+.si-li svg{color:var(--gold);flex-shrink:0;margin-top:1px;}
+
+/* ── AD BANNER ── */
+.ad-strip{background:var(--navy2);border-top:3px solid var(--gold);border-bottom:3px solid var(--gold);}
+.ad-strip-inner{max-width:1400px;margin:0 auto;padding:2.5rem clamp(2rem,5vw,5rem);display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.ad-pill{background:var(--gold);color:var(--navy);padding:.25rem .75rem;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.75rem;display:inline-block;}
+.ad-h{font-family:'Neue Montreal',serif;font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:700;color:var(--cream);}
+.ad-p{font-size:.88rem;color:rgba(250,247,240,.5);margin-top:.4rem;max-width:500px;}
+.ad-btn{background:var(--gold);color:var(--navy);padding:.75rem 1.75rem;font-size:.85rem;font-weight:700;text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;transition:.3s;flex-shrink:0;}
+.ad-btn:hover{background:var(--gold2);}
+
+/* ── CTA ── */
+.cta{background:var(--navy);padding:clamp(5rem,12vw,10rem) clamp(2rem,5vw,5rem);position:relative;overflow:hidden;}
+.cta-bg-t{position:absolute;bottom:-2rem;left:0;right:0;font-family:'Neue Montreal',serif;font-size:clamp(4rem,15vw,14rem);font-weight:900;font-style:italic;color:rgba(250,247,240,.02);line-height:1;white-space:nowrap;pointer-events:none;user-select:none;}
+.cta-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;position:relative;z-index:2;}
+.cta-h{font-family:'Neue Montreal',serif;font-size:clamp(2.5rem,6vw,5.5rem);font-weight:900;color:var(--cream);line-height:1.05;}
+.cta-h em{font-style:italic;color:var(--gold);}
+.cta-sub{font-size:1rem;font-weight:300;color:rgba(250,247,240,.5);margin-top:1.5rem;line-height:1.7;}
+.form{display:flex;flex-direction:column;gap:1rem;}
+.form-input{background:rgba(250,247,240,.06);border:1.5px solid rgba(250,247,240,.12);padding:1rem 1.5rem;font-size:1rem;font-family:'DM Sans',sans-serif;color:var(--cream);outline:none;transition:.3s;}
+.form-input::placeholder{color:rgba(250,247,240,.3);}
+.form-input:focus{border-color:var(--gold);background:rgba(250,247,240,.08);}
+.form-btn{background:var(--gold);color:var(--navy);border:none;padding:1rem 2rem;font-size:1rem;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.3s;}
+.form-btn:hover{background:var(--gold2);transform:translateY(-1px);}
+.form-note{font-size:.78rem;color:rgba(250,247,240,.3);text-align:center;}
+
+/* ── FOOTER ── */
+footer{background:var(--navy2);border-top:1px solid rgba(250,247,240,.06);padding:2.5rem clamp(2rem,5vw,5rem);}
+.foot-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.foot-logo{font-family:'Neue Montreal',serif;font-size:.95rem;font-weight:700;color:rgba(250,247,240,.7);}
+.foot-links{display:flex;gap:2rem;list-style:none;}
+.foot-links a{font-size:.82rem;color:rgba(250,247,240,.3);text-decoration:none;transition:.3s;}
+.foot-links a:hover{color:var(--cream);}
+.foot-copy{font-size:.78rem;color:rgba(250,247,240,.2);}
+
+/* ── REVEAL ── */
+.rv{opacity:0;transform:translateY(40px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1);}
+.rv.v{opacity:1;transform:none;}
+.d1{transition-delay:.1s;}.d2{transition-delay:.2s;}.d3{transition-delay:.3s;}.d4{transition-delay:.45s;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .hero{grid-template-columns:1fr;min-height:auto;}
+  .hero-r{display:none;}
+  .sticky-section{grid-template-columns:1fr;}
+  .sticky-l{position:relative;height:auto;top:auto;}
+  .scope-head{grid-template-columns:1fr;}
+  .cta-inner{grid-template-columns:1fr;}
+  .scope-grid{grid-template-columns:1fr;}
+  .scope-item{border-right:none;border-bottom:1px solid var(--border);}
+  .scope-item:last-child{border-bottom:none;}
+}
+@media(max-width:768px){
+  nav{padding:0 1.25rem;}
+  .nav-r{display:none;}
+  #ham{display:flex;}
+  .hero-l{padding:5rem 1.25rem 3rem;}
+  .hero-meta{gap:2rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<nav id="nav">
+  <a href="#" class="logo">
+    <div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M2 22V12a10 10 0 1 1 20 0v10"/></svg></div>
+    <span class="logo-name">Budget Ndio Story</span>
+  </a>
+  <div class="nav-r">
+    <a href="#manifesto">Manifesto</a>
+    <a href="#method">Method</a>
+    <a href="#scope">Scope</a>
+    <a href="#contact" class="nav-cta">Early Access</a>
+  </div>
+  <button id="ham"><span></span><span></span><span></span></button>
+</nav>
+
+<div id="mob">
+  <a href="#manifesto" class="ml">Manifesto</a>
+  <a href="#method" class="ml">Method</a>
+  <a href="#scope" class="ml">Scope</a>
+  <a href="#contact" class="ml">Early Access</a>
+</div>
+
+<!-- Ticker -->
+<div class="ticker">
+  <div class="ticker-t">
+    <div class="ticker-i"><span>NEW</span> Kenya Budget 2025/26 Analysis — Launching Q2 2026</div>
+    <div class="ticker-i"><span>✦</span> 47 Counties Mapped</div>
+    <div class="ticker-i"><span>✦</span> 100% Free Access — Forever</div>
+    <div class="ticker-i"><span>✦</span> Follow the Money · Find the Story</div>
+    <div class="ticker-i"><span>NEW</span> Kenya Budget 2025/26 Analysis — Launching Q2 2026</div>
+    <div class="ticker-i"><span>✦</span> 47 Counties Mapped</div>
+    <div class="ticker-i"><span>✦</span> 100% Free Access — Forever</div>
+    <div class="ticker-i"><span>✦</span> Follow the Money · Find the Story</div>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <!-- Video Background -->
+  <video class="hero-video" autoplay muted loop playsinline>
+    <source src="/static/bns001.mp4" type="video/mp4">
+  </video>
+  <div class="hero-video-overlay"></div>
+  
+  <div class="hero-l">
+    <p class="hero-eyebrow">Kenya Budget Transparency Platform</p>
+    <div class="hero-title-wrap">
+      <h1 class="hero-title">
+        Budget<br><em>Ndio</em><br>Story
+        <span class="full">Kenya's Budget Decoded</span>
+      </h1>
+    </div>
+    <div class="hero-seo">
+      <div class="hero-divider"></div>
+      <p>Kenya's national budget surpasses <strong>KSh 4 trillion</strong> every year, yet most citizens never know where that money goes. <strong>Budget Ndio Story</strong> is Kenya's first dedicated budget transparency platform — turning dense government documents into clear, visual, and actionable public information. We cover all <strong>47 counties</strong>, every sector, from the Treasury to your ward.</p>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <div class="hero-meta-num"><span class="ct" data-t="47">0</span></div>
+        <div class="hero-meta-label">Counties</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-num">4<sup>T KSh</sup></div>
+        <div class="hero-meta-label">Budget Tracked</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-num"><span class="ct" data-t="100">0</span><sup>%</sup></div>
+        <div class="hero-meta-label">Free Forever</div>
+      </div>
+    </div>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-gold">Get Early Access <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+      <a href="#manifesto" class="btn-outline">Read the Manifesto</a>
+    </div>
+  </div>
+  <div class="hero-r">
+    <div class="hero-r-bg" id="hgrid"></div>
+    <div class="hero-r-content">
+      <div class="paper">
+        <div class="paper-sub">Budget Ndio Story — Preview Edition</div>
+        <div class="paper-head">The KSh 4 Trillion Question</div>
+        <div class="paper-cols">
+          <div class="paper-col"><p>National Budget</p><p>The FY2025/26 appropriations bill allocates over KSh 3.9 trillion across all government ministries, departments, and agencies.</p></div>
+          <div class="paper-col"><p>County Allocation</p><p>County governments receive an equitable share exceeding KSh 390 billion, plus conditional grants from national programmes.</p></div>
+        </div>
+        <div class="paper-stat">
+          <span class="paper-stat-n">47</span>
+          <span class="paper-stat-l">Counties. One Platform. Complete Transparency.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Manifesto -->
+<section id="manifesto">
+<div class="sticky-section">
+  <div class="sticky-l">
+    <div style="position:relative;z-index:2;">
+      <p class="sticky-l-label">01 — Manifesto</p>
+      <h2 class="sticky-l-title">Why Budget Ndio Story Exists</h2>
+      <p class="sticky-l-desc">Kenya's public finance data is technically public — but practically inaccessible. We exist to close that gap, permanently.</p>
+    </div>
+    <div class="sticky-l-num">01</div>
+  </div>
+  <div class="sticky-r">
+    <div class="scroll-cards">
+      <div class="scard sc">
+        <div class="scard-num">01.A</div>
+        <h3>The Transparency Problem</h3>
+        <p>Kenya's budget documents are published by law — but they are written for compliance, not communication. Dense tables, acronyms, and 300-page PDFs create a wall between citizens and the decisions that shape their lives. Budget Ndio Story tears down that wall, translating every document into language that every Kenyan can understand and act on.</p>
+        <div class="scard-tags"><span class="scard-tag">Accountability</span><span class="scard-tag">Access</span><span class="scard-tag">Clarity</span></div>
+      </div>
+      <div class="scard sc">
+        <div class="scard-num">01.B</div>
+        <h3>The Democratic Stakes</h3>
+        <p>When citizens cannot read the budget, they cannot meaningfully participate in public forums. They cannot question an MCA about ward project allocations. They cannot verify whether a hospital promised in a county speech was ever funded. Budget literacy is the foundation of democratic accountability — and right now, it belongs to too few people.</p>
+        <div class="scard-tags"><span class="scard-tag">Democracy</span><span class="scard-tag">Participation</span></div>
+      </div>
+      <div class="scard sc">
+        <div class="scard-num">01.C</div>
+        <h3>Our Commitment</h3>
+        <p>Budget Ndio Story is a public good, not a product. Every report, every dataset, every explainer we produce will be free to access, forever. We believe that transparency infrastructure should be owned by everyone — and that the next generation of Kenyans deserves the tools to hold power accountable without a paywall in the way.</p>
+        <div class="scard-tags"><span class="scard-tag">Free Forever</span><span class="scard-tag">Open Data</span></div>
+      </div>
+      <div class="scard sc">
+        <div class="scard-num">01.D</div>
+        <h3>For Every Kenyan</h3>
+        <p>Whether you're a secondary school student in Kisii, a journalist in Nairobi, a community organiser in Mombasa, or a county assembly member in Garissa — this platform is built for you. Kenya's budget story belongs to every citizen who pays taxes, uses a school, or needs a hospital. That's all of us.</p>
+        <div class="scard-tags"><span class="scard-tag">Nationwide</span><span class="scard-tag">Inclusive</span><span class="scard-tag">Civic Tech</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Quote -->
+<div class="quote-section rv">
+  <p class="quote-text">"The budget is a moral document. If you want to know what a government values — don't listen to its speeches. Read its balance sheet."</p>
+  <p class="quote-attr">— The Budget Ndio Story Manifesto</p>
+  <div class="quote-bg">₭</div>
+</div>
+
+<!-- Method sticky -->
+<section id="method">
+<div class="sticky-section">
+  <div class="sticky-l" style="background:#1A2740;">
+    <div style="position:relative;z-index:2;">
+      <p class="sticky-l-label">02 — Method</p>
+      <h2 class="sticky-l-title">How We Do It</h2>
+      <p class="sticky-l-desc">Three rigorous steps from raw government data to informed citizen action. No shortcuts. No compromises.</p>
+    </div>
+    <div class="sticky-l-num">02</div>
+  </div>
+  <div class="sticky-r" style="background:#F0EDE6;">
+    <div class="scroll-cards">
+      <div class="scard sc">
+        <div class="scard-num">02.A — Investigation</div>
+        <h3>We Read Everything So You Don't Have To</h3>
+        <p>Every budget document published by the National Treasury, Controller of Budget, Auditor General, and all 47 county governments is obtained, catalogued, and cross-referenced. Our team validates every number against at least two independent sources before any figure is published on this platform. No unverified data ever reaches our audience.</p>
+        <div class="scard-tags"><span class="scard-tag">OCDS Data</span><span class="scard-tag">IFMIS Records</span><span class="scard-tag">CoB Reports</span><span class="scard-tag">Audit Trails</span></div>
+      </div>
+      <div class="scard sc">
+        <div class="scard-num">02.B — Translation</div>
+        <h3>Numbers Become Narratives</h3>
+        <p>Raw data is meaningless without context. We pair every figure with the story behind it — who decided it, what it means in practice, and what changed year on year. We produce visual reports, interactive charts, short-form video explainers, and social content designed to reach Kenyans where they already are: on their phones, in their communities, in their classrooms.</p>
+        <div class="scard-tags"><span class="scard-tag">Visual Reports</span><span class="scard-tag">Video</span><span class="scard-tag">Infographics</span></div>
+      </div>
+      <div class="scard sc">
+        <div class="scard-num">02.C — Activation</div>
+        <h3>Information That Creates Action</h3>
+        <p>Transparency without participation is incomplete. That's why we build practical civic tools alongside our content — templates for county budget forums, ward-level spending trackers, and a training programme for Budget Champions: one trained community representative per county to lead local accountability efforts across Kenya's 47 devolved units.</p>
+        <div class="scard-tags"><span class="scard-tag">Budget Champions</span><span class="scard-tag">Ward Trackers</span><span class="scard-tag">Civic Toolkits</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Ad Banner -->
+<div class="ad-strip rv">
+  <div class="ad-strip-inner">
+    <div>
+      <span class="ad-pill">Partner Spotlight</span>
+      <h4 class="ad-h">Budget Champions Programme 2026 — Applications Open</h4>
+      <p class="ad-p">We're recruiting one Budget Champion per county — 47 trained civic advocates to lead public participation forums during Kenya's 2026/27 budget cycle. Fully supported. No cost to applicants.</p>
+    </div>
+    <a href="#contact" class="ad-btn">Apply Now <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+  </div>
+</div>
+
+<!-- Scope -->
+<section id="scope" class="scope">
+  <div class="scope-inner">
+    <div class="scope-head">
+      <div>
+        <p class="sec-label rv">03 — Scope</p>
+        <h2 class="sec-title rv d1">What We Track</h2>
+      </div>
+      <p class="scope-intro rv d2">From the National Treasury in Nairobi to ward development funds in Turkana and Kwale. <strong>Complete, verified coverage</strong> of Kenya's entire public finance ecosystem — national, county, and sector level.</p>
+    </div>
+    <div class="scope-grid">
+      <div class="scope-item rv">
+        <div class="si-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 22V12a10 10 0 1 1 20 0v10"/><path d="M6 22V11"/><path d="M18 22V11"/></svg></div>
+        <div class="si-title">National Government</div>
+        <ul class="si-list">
+          <li class="si-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Budget Policy Statements</li>
+          <li class="si-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Appropriation Bills & Supplementaries</li>
+          <li class="si-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Controller of Budget Reports</li>
+          <li class="si-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Auditor General Findings</li>
+          <li class="si-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Consolidated Fund Services</li>
+        </ul>
+      </div>
+      <div class="scope-item rv d2">
+        <div class="si-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <div class="si-title">County Governments</div>
+        <ul class="si-list">
+          <li class="si-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Fiscal Strategy Papers</li>
+          <li class="si-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Finance Bills & Budgets</li>
+          <li class="si-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Quarterly Expenditure Reports</li>
+          <li class="si-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Ward Development Fund Allocations</li>
+          <li class="si-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Procurement Plans & Contracts</li>
+        </ul>
+      </div>
+      <div class="scope-item rv d3">
+        <div class="si-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21.21 15.89A10 10 0 1 1 8 2.83M22 12A10 10 0 0 0 12 2v10z"/></svg></div>
+        <div class="si-title">Sector Breakdown</div>
+        <ul class="si-list">
+          <li class="si-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Healthcare & Social Protection</li>
+          <li class="si-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Education Budgets & Capitation</li>
+          <li class="si-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Infrastructure & Roads</li>
+          <li class="si-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Agriculture & Food Security</li>
+          <li class="si-li"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Youth & Employment Programmes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contact" class="cta">
+  <div class="cta-bg-t">Budget Ndio Story</div>
+  <div class="cta-inner">
+    <div class="rv">
+      <h2 class="cta-h">Be the<br>First to <em>Know.</em></h2>
+      <p class="cta-sub">We're building Budget Ndio Story in public. Join the early access list for exclusive previews, beta tools, and launch-day reports before anyone else.</p>
+    </div>
+    <div class="rv d2">
+      <form class="form" onsubmit="sub(event)">
+        <input type="email" class="form-input" placeholder="Your email address" required id="ei">
+        <button type="submit" class="form-btn" id="sb">Request Early Access <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+      </form>
+      <p class="form-note" style="margin-top:.75rem;">No spam. Unsubscribe anytime.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-logo">Budget Ndio Story</div>
+    <ul class="foot-links">
+      <li><a href="https://x.com/BudgetNdioStory" target="_blank">Twitter</a></li>
+      <li><a href="https://www.instagram.com/budgetndiostory" target="_blank">Instagram</a></li>
+      <li><a href="https://www.youtube.com/@BudgetNdioStory" target="_blank">YouTube</a></li>
+      <li><a href="mailto:hello@budgetndiostory.ke">Email</a></li>
+    </ul>
+    <p class="foot-copy">© 2026 Budget Ndio Story</p>
+  </div>
+</footer>
+
+<script>
+// Progress
+window.addEventListener('scroll',()=>{
+  document.getElementById('prog').style.width=(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%';
+  document.getElementById('nav').classList.toggle('s',window.scrollY>60);
+},{passive:true});
+
+// Hamburger
+const ham=document.getElementById('ham'),mob=document.getElementById('mob');
+ham.addEventListener('click',()=>{ham.classList.toggle('o');mob.classList.toggle('o');document.body.style.overflow=mob.classList.contains('o')?'hidden':'';});
+document.querySelectorAll('.ml').forEach(l=>l.addEventListener('click',()=>{ham.classList.remove('o');mob.classList.remove('o');document.body.style.overflow='';}));
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'});}}));
+
+// Reveal
+const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v');}),{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+
+// Scroll cards
+const so=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('a');}),{threshold:.2});
+document.querySelectorAll('.sc').forEach(el=>so.observe(el));
+
+// Count up
+const co=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const el=e.target,t=+el.dataset.t,d=1600,s=performance.now();const u=n=>{const p=Math.min((n-s)/d,1),ea=1-Math.pow(1-p,3);el.textContent=Math.floor(ea*t);if(p<1)requestAnimationFrame(u);else el.textContent=t;};requestAnimationFrame(u);co.unobserve(el);}}),{threshold:.5});
+document.querySelectorAll('.ct').forEach(el=>co.observe(el));
+
+// Grid bg
+const g=document.getElementById('hgrid');if(g){for(let i=0;i<96;i++){const d=document.createElement('div');g.appendChild(d);}}
+
+// Submit
+function sub(e){e.preventDefault();const b=document.getElementById('sb');b.textContent='✓ You\'re on the list!';b.style.background='#2D7A4F';b.style.color='#fff';b.disabled=true;setTimeout(()=>{b.innerHTML='Request Early Access <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';b.style.background='';b.style.color='';b.disabled=false;document.getElementById('ei').value='';},4000);}
+</script>
+</body>
+</html>
