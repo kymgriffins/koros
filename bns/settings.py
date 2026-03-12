@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-8nxldl6euegm^&r@0(a#(7vubl$^0@*nkvy0-omy=^!^)et28v
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.budgetndiostory.org', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['budgetndiostory.org', 'www.budgetndiostory.org', 'localhost', '127.0.0.1']
 
 
 # Application definition
